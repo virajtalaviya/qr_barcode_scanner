@@ -107,7 +107,7 @@ class HistoryPageCreated extends StatelessWidget {
           : (historyController.realmResultsCreatedQRCode?.length ?? 0) == 0
               ? const Center(
                   child: Text(
-                    "No code found!",
+                    "No created code found!",
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.black,

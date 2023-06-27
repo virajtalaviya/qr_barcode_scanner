@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:my_scanner/components/banner_ad_component.dart';
 import 'package:my_scanner/components/common_button.dart';
 import 'package:my_scanner/components/common_snackbar.dart';
 import 'package:my_scanner/utils/color_utils.dart';
@@ -66,127 +67,136 @@ class SavedBarCode extends StatelessWidget {
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-            child: Column(
-              children: [
-                Center(
-                  child: Container(
-                    height: height * 0.5,
-                    width: width,
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      color: ColorUtils.splashLogoBG,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: ColorUtils.splashLogoBorder),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                child: Column(
+                  children: [
+                    Center(
+                      child: Container(
+                        height: height * 0.5,
+                        width: width,
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: ColorUtils.splashLogoBG,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: ColorUtils.splashLogoBorder),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              codeType,
+                              style: const TextStyle(
+                                fontFamily: FontFamily.productSansBold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            Center(
+                              child: Container(
+                                height: height * 0.35,
+                                width: width * 0.75,
+                                padding: const EdgeInsets.all(15),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: qrImage != null
+                                      ? DecorationImage(
+                                          image: MemoryImage(
+                                            qrImage ?? Uint8List(10),
+                                          ),
+                                        )
+                                      : null,
+                                  // border: Border.all(color: ColorUtils.splashLogoBorder),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Container(
+                      // height: height * 0.15,
+                      width: width,
+                      margin: const EdgeInsets.only(top: 10, bottom: 10),
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        color: ColorUtils.splashLogoBG,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: ColorUtils.splashLogoBorder),
+                      ),
+                      constraints: BoxConstraints(
+                        minHeight: height * 0.15,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Contents:",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: FontFamily.productSansBold,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            "${createdQRCode.content}",
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: FontFamily.productSansRegular,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
                       children: [
-                        Text(
-                          codeType,
-                          style: const TextStyle(
-                            fontFamily: FontFamily.productSansBold,
-                            fontSize: 16,
+                        Expanded(
+                          child: CommonButton(
+                            title: "Share",
+                            imagePath: ImagePaths.elevatedButtonShare,
+                            onTap: () async {
+                              if (qrImage != null) {
+                                /// Type of qrImage is Uint8List
+                                final Directory temporaryDirectory = await getTemporaryDirectory();
+                                final String path = "${temporaryDirectory.path}/image.jpg";
+                                File(path).writeAsBytesSync(qrImage!);
+                                await Share.shareXFiles([XFile(path)]);
+                              } else {
+                                showSnackBar(context, "This barcode can't be shared");
+                              }
+                            },
                           ),
                         ),
-                        const SizedBox(height: 15),
-                        Center(
-                          child: Container(
-                            height: height * 0.35,
-                            width: width * 0.75,
-                            padding: const EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                              image: qrImage != null
-                                  ? DecorationImage(
-                                      image: MemoryImage(
-                                        qrImage ?? Uint8List(10),
-                                      ),
-                                    )
-                                  : null,
-                              // border: Border.all(color: ColorUtils.splashLogoBorder),
-                            ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: CommonButton(
+                            title: "Delete",
+                            imagePath: ImagePaths.elevatedButtonDelete,
+                            onTap: () {
+                              DataBaseHelper.realm.write(() {
+                                DataBaseHelper.realm
+                                    .delete<CreatedQRCode>(DataBaseHelper.realm.all<CreatedQRCode>().last);
+                              });
+                              Get.close(3);
+                              showSnackBar(context, "Barcode deleted");
+                            },
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ),
-                Container(
-                  // height: height * 0.15,
-                  width: width,
-                  margin: const EdgeInsets.only(top: 10, bottom: 10),
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: ColorUtils.splashLogoBG,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: ColorUtils.splashLogoBorder),
-                  ),
-                  constraints: BoxConstraints(
-                    minHeight: height * 0.15,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Contents:",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: FontFamily.productSansBold,
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        "${createdQRCode.content}",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontFamily: FontFamily.productSansRegular,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: CommonButton(
-                        title: "Share",
-                        imagePath: ImagePaths.elevatedButtonShare,
-                        onTap: () async {
-                          if (qrImage != null) {
-                            /// Type of qrImage is Uint8List
-                            final Directory temporaryDirectory = await getTemporaryDirectory();
-                            final String path = "${temporaryDirectory.path}/image.jpg";
-                            File(path).writeAsBytesSync(qrImage!);
-                            await Share.shareXFiles([XFile(path)]);
-                          } else {
-                            showSnackBar(context, "This barcode can't be shared");
-                          }
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: CommonButton(
-                        title: "Delete",
-                        imagePath: ImagePaths.elevatedButtonDelete,
-                        onTap: () {
-                          DataBaseHelper.realm.write(() {
-                            DataBaseHelper.realm.delete<CreatedQRCode>(DataBaseHelper.realm.all<CreatedQRCode>().last);
-                          });
-                          Get.close(3);
-                          showSnackBar(context, "Barcode deleted");
-                        },
-                      ),
-                    ),
                   ],
                 ),
-              ],
+              ),
             ),
-          ),
+            const Align(
+              alignment: Alignment.bottomCenter,
+              child: BannerComponent(),
+            ),
+          ],
         ),
       ),
     );

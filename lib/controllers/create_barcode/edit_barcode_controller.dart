@@ -5,11 +5,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:my_scanner/components/common_loader.dart';
 import 'package:my_scanner/screens/create_barcode/saved_barcode.dart';
+import 'package:my_scanner/utils/constants.dart';
 import 'package:my_scanner/utils/database_helper.dart';
 
 class EditCreatedBarcodeController extends GetxController {
+
+  late BuildContext context;
+  late String title;
+  late String content;
+
   RxString displayText = "Text entered will display here".obs;
   List<Color> codeFGBGColor = const [
     Color(0xff000000),
@@ -58,8 +65,49 @@ class EditCreatedBarcodeController extends GetxController {
     return pngBytes;
   }
 
+  int loadAttempt = 0;
+  InterstitialAd? interstitialAd;
 
-  void saveBarCode(BuildContext context, String title, String content) async {
+  void loadInterstitialAD() {
+    InterstitialAd.load(
+      adUnitId: Constants.interstitialAdId,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          interstitialAd = ad;
+          interstitialAd?.fullScreenContentCallback = FullScreenContentCallback(
+            onAdShowedFullScreenContent: (ad) {},
+            onAdImpression: (ad) {},
+            onAdClicked: (ad) {},
+            onAdDismissedFullScreenContent: (ad) {
+              saveBarCode();
+              interstitialAd?.dispose();
+              interstitialAd = null;
+              loadInterstitialAD();
+            },
+            onAdFailedToShowFullScreenContent: (ad, error) {
+              saveBarCode();
+              interstitialAd?.dispose();
+              interstitialAd = null;
+              loadInterstitialAD();
+            },
+          );
+        },
+        onAdFailedToLoad: (error) {
+          loadAttempt = loadAttempt + 1;
+          if (loadAttempt <= 3) {
+            loadInterstitialAD();
+          } else {
+            Future.delayed(const Duration(seconds: 10), () {
+              loadAttempt = 0;
+            });
+          }
+        },
+      ),
+    );
+  }
+
+  void saveBarCode() async {
     showLoader(context);
 
     Uint8List? qrImage = await _capturePng();
@@ -88,5 +136,14 @@ class EditCreatedBarcodeController extends GetxController {
         codeType: title,
       ),
     );
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    if (Constants.interstitialAdId != "") {
+      loadInterstitialAD();
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:my_scanner/components/banner_ad_component.dart';
 import 'package:my_scanner/controllers/main_bg_controller.dart';
 import 'package:my_scanner/screens/drawer_screens/home_screen.dart';
 import 'package:my_scanner/widgets/custom_app_bars/home_app_bar.dart';
@@ -28,6 +29,7 @@ class MainBG extends StatelessWidget {
               ),
             ),
             body: controller.currentWidget,
+            bottomNavigationBar: const BannerComponent(),
           );
         });
   }

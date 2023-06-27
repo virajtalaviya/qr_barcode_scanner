@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_scanner/controllers/main_bg_controller.dart';
 import 'package:my_scanner/utils/color_utils.dart';
+import 'package:my_scanner/utils/constants.dart';
 import 'package:my_scanner/utils/font_family.dart';
 
 class DrawerContent extends StatelessWidget {
@@ -69,7 +70,22 @@ class DrawerContent extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return ListTile(
                       onTap: () {
-                        mainBGController.drawerTapEvents(index, scaffoldKey);
+                        mainBGController.currentIndex = index;
+                        mainBGController.scaffoldKey = scaffoldKey;
+                        if (index == 0 || index == 1 || index == 5) {
+                          if (mainBGController.interstitialAd != null) {
+                            if (Constants.adLoadTimes % 2 == 0) {
+                              mainBGController.interstitialAd?.show();
+                            } else {
+                              mainBGController.drawerTapEvents();
+                            }
+                          } else {
+                            mainBGController.drawerTapEvents();
+                          }
+                        } else {
+                          mainBGController.drawerTapEvents();
+                        }
+                        Constants.adLoadTimes++;
                       },
                       leading: Image.asset(
                         content[index].icon,

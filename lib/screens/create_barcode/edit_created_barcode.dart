@@ -48,7 +48,14 @@ class EditCreatedBarcode extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () {
-                editCreatedBarcodeController.saveBarCode(context, type, content);
+                editCreatedBarcodeController.context = context;
+                editCreatedBarcodeController.title = type;
+                editCreatedBarcodeController.content = content;
+                if (editCreatedBarcodeController.interstitialAd != null) {
+                  editCreatedBarcodeController.interstitialAd?.show();
+                } else {
+                  editCreatedBarcodeController.saveBarCode();
+                }
               },
               child: const Text(
                 "Save",

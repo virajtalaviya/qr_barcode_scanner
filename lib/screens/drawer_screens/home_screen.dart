@@ -3,8 +3,6 @@ import 'package:get/get.dart';
 import 'package:my_scanner/components/common_box_in_home.dart';
 import 'package:my_scanner/components/home_qr_barcode_image.dart';
 import 'package:my_scanner/controllers/drawer_section_controllers/home_screen_controller.dart';
-import 'package:my_scanner/screens/create_barcode/create_barcode.dart';
-import 'package:my_scanner/screens/create_qr/create_qr_screen.dart';
 import 'package:my_scanner/utils/color_utils.dart';
 import 'package:my_scanner/utils/font_family.dart';
 import 'package:my_scanner/utils/image_paths.dart';
@@ -16,9 +14,9 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     HomeController homeController = Get.put(HomeController());
-    return Padding(
-      padding: const EdgeInsets.only(left: 15, right: 15),
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 15, right: 15),
         child: Column(
           children: [
             Container(
@@ -40,7 +38,12 @@ class HomeScreen extends StatelessWidget {
                   shadowColor: ColorUtils.createQrShadow,
                   gradiantColorList: ColorUtils.createQrGradient,
                   tapEvents: () {
-                    Get.to(() => const CreateQRScreen());
+                    homeController.screenCount = 0;
+                    if (homeController.interstitialAd != null) {
+                      homeController.interstitialAd?.show();
+                    } else {
+                      homeController.navigation();
+                    }
                   },
                 ),
                 const SizedBox(width: 10),
@@ -50,7 +53,12 @@ class HomeScreen extends StatelessWidget {
                   shadowColor: ColorUtils.createBarCodeShadow,
                   gradiantColorList: ColorUtils.createBarCodeGradient,
                   tapEvents: () {
-                    Get.to(() => const CreateBarcodeScreen());
+                    homeController.screenCount = 1;
+                    if (homeController.interstitialAd != null) {
+                      homeController.interstitialAd?.show();
+                    } else {
+                      homeController.navigation();
+                    }
                   },
                 )
               ],
@@ -59,7 +67,12 @@ class HomeScreen extends StatelessWidget {
             InkWell(
               borderRadius: BorderRadius.circular(10),
               onTap: () {
-                homeController.navigation(3);
+                homeController.screenCount = 2;
+                if (homeController.interstitialAd != null) {
+                  homeController.interstitialAd?.show();
+                } else {
+                  homeController.navigation();
+                }
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -86,6 +99,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 15),
           ],
         ),
       ),

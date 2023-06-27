@@ -44,6 +44,11 @@ dependencies:
   share_plus: ^7.0.2
   path_provider: ^2.0.15
   just_audio: ^0.9.34
+  google_mobile_ads: ^3.0.0
+  firebase_analytics: ^10.4.3
+  firebase_remote_config: ^4.2.3
+  firebase_core: ^2.14.0
+  connectivity_plus: ^4.0.1
 
 dev_dependencies:
   flutter_test:

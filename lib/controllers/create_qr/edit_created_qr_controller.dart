@@ -5,11 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:my_scanner/components/common_loader.dart';
 import 'package:my_scanner/screens/create_qr/saved_qr.dart';
+import 'package:my_scanner/utils/constants.dart';
 import 'package:my_scanner/utils/database_helper.dart';
 
 class EditCreatedQRController extends GetxController {
+  late BuildContext context;
+  late String title;
+  late String content;
+
   List<Color> codeFGBGColor = const [
     Color(0xff000000),
     Color(0xffFFFFFF),
@@ -55,7 +61,49 @@ class EditCreatedQRController extends GetxController {
     return pngBytes;
   }
 
-  void saveQRCode(BuildContext context, String title, String content) async {
+  int loadAttempt = 0;
+  InterstitialAd? interstitialAd;
+
+  void loadInterstitialAD() {
+    InterstitialAd.load(
+      adUnitId: Constants.interstitialAdId,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          interstitialAd = ad;
+          interstitialAd?.fullScreenContentCallback = FullScreenContentCallback(
+            onAdShowedFullScreenContent: (ad) {},
+            onAdImpression: (ad) {},
+            onAdClicked: (ad) {},
+            onAdDismissedFullScreenContent: (ad) {
+              saveQRCode();
+              interstitialAd?.dispose();
+              interstitialAd = null;
+              loadInterstitialAD();
+            },
+            onAdFailedToShowFullScreenContent: (ad, error) {
+              saveQRCode();
+              ad.dispose();
+              interstitialAd = null;
+              loadInterstitialAD();
+            },
+          );
+        },
+        onAdFailedToLoad: (error) {
+          loadAttempt = loadAttempt + 1;
+          if (loadAttempt <= 3) {
+            loadInterstitialAD();
+          } else {
+            Future.delayed(const Duration(seconds: 10), () {
+              loadAttempt = 0;
+            });
+          }
+        },
+      ),
+    );
+  }
+
+  void saveQRCode() async {
     showLoader(context);
 
     Uint8List? qrImage = await _capturePng();
@@ -83,5 +131,14 @@ class EditCreatedQRController extends GetxController {
         ),
       ),
     );
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    if (Constants.interstitialAdId != "") {
+      loadInterstitialAD();
+    }
   }
 }

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:my_scanner/components/banner_ad_component.dart';
 import 'package:my_scanner/components/common_button.dart';
 import 'package:my_scanner/components/common_snackbar.dart';
 import 'package:my_scanner/utils/color_utils.dart';
@@ -182,6 +183,7 @@ class SavedQRCode extends StatelessWidget {
             ),
           ),
         ),
+        bottomNavigationBar: const BannerComponent(),
       ),
     );
   }

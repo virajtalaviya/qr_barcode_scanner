@@ -58,7 +58,6 @@ class ScanBarcodeAndQR extends StatelessWidget {
             child: Stack(
               children: [
                 MobileScanner(
-
                   controller: scanBarcodeQRController.mobileScannerController,
                   onDetect: (barcodes) {
                     Get.to(() => ScanResult(barcodes: barcodes));

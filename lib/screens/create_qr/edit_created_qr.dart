@@ -42,7 +42,14 @@ class EditCreatedQR extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
-              editCreatedQRController.saveQRCode(context, type, content);
+              editCreatedQRController.context = context;
+              editCreatedQRController.title = type;
+              editCreatedQRController.content = content;
+              if (editCreatedQRController.interstitialAd != null) {
+                editCreatedQRController.interstitialAd?.show();
+              } else {
+                editCreatedQRController.saveQRCode();
+              }
             },
             child: const Text(
               "Save",
