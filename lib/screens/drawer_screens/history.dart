@@ -139,13 +139,16 @@ class HistoryPageCreated extends StatelessWidget {
 
                           Uint8List qrImageData = Uint8List.fromList(imageBytes);
 
-                          Get.to(
+                          final result  = await Get.to(
                             () => QrPreviewScreen(
                               createdQRCode: historyController.realmResultsCreatedQRCode![index],
                               scannedOrCreated: "Created",
                               qrImage: qrImageData,
                             ),
                           );
+                          if(result == "getData"){
+                            historyController.getCreatedQRCode();
+                          }
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

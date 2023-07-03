@@ -22,8 +22,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppLifeCycle(
-      child: const GetMaterialApp(
+    // return const GetMaterialApp(
+    //   debugShowCheckedModeBanner: false,
+    //   home: SplashScreen(),
+    // );
+    return const AppLifeCycle(
+      child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),
       ),
@@ -31,54 +35,137 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// class AppLifeCycle extends StatefulWidget {
+//   const AppLifeCycle({Key? key, required this.child}) : super(key: key);
+//
+//   final Widget child;
+//
+//   @override
+//   State<AppLifeCycle> createState() => _AppLifeCycleState();
+// }
+//
+// class _AppLifeCycleState extends State<AppLifeCycle> with WidgetsBindingObserver {
+//   AppOpenAdManager appOpenAdManager = AppOpenAdManager();
+//
+//   bool showAD = false;
+//
+//   @override
+//   void didChangeAppLifecycleState(AppLifecycleState state) {
+//     // TODO: implement didChangeAppLifecycleState
+//     super.didChangeAppLifecycleState(state);
+//     print("##########################   $state   ########################");
+//     switch (state) {
+//       case AppLifecycleState.detached:
+//         break;
+//       case AppLifecycleState.inactive:
+//         showAD = true;
+//         break;
+//       case AppLifecycleState.paused:
+//         showAD = true;
+//         break;
+//       case AppLifecycleState.resumed:
+//         if (appOpenAdManager.appOpenAd != null) {
+//           if (showAD) {
+//             appOpenAdManager.appOpenAd?.show();
+//             showAD = false;
+//           }
+//         }
+//         break;
+//     }
+//   }
+//
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     super.initState();
+//     WidgetsBinding.instance.addObserver(this);
+//   }
+//
+//   @override
+//   void dispose() {
+//     // TODO: implement dispose
+//     super.dispose();
+//     WidgetsBinding.instance.removeObserver(this);
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return widget.child;
+//   }
+// }
+//
+// class AppOpenAdManager {
+//   AppOpenAdManager() {
+//     print("----   load 1");
+//     loadAppOpenAd();
+//   }
+//
+//   int failAttempt = 0;
+//   AppOpenAd? appOpenAd;
+//   bool isShowingAd = false;
+//
+//   bool get isAdAvailable {
+//     return appOpenAd != null;
+//   }
+//
+//   /// Load an AppOpenAd.
+//   void loadAppOpenAd() {
+//     AppOpenAd.load(
+//       adUnitId: "ca-app-pub-3940256099942544/3419835294",
+//       request: const AdRequest(),
+//       adLoadCallback: AppOpenAdLoadCallback(
+//         onAdLoaded: (ad) {
+//           print("----   load 2");
+//           appOpenAd = ad;
+//           appOpenAd?.fullScreenContentCallback = FullScreenContentCallback(
+//             onAdFailedToShowFullScreenContent: (ad, error) {},
+//             onAdDismissedFullScreenContent: (ad) {
+//               appOpenAd?.dispose();
+//               appOpenAd = null;
+//               loadAppOpenAd();
+//             },
+//             onAdClicked: (ad) {},
+//             onAdImpression: (ad) {},
+//             onAdShowedFullScreenContent: (ad) {},
+//             onAdWillDismissFullScreenContent: (ad) {},
+//           );
+//         },
+//         onAdFailedToLoad: (error) {
+//           failAttempt++;
+//           if (failAttempt <= 3) {
+//             loadAppOpenAd();
+//             Future.delayed(
+//               const Duration(seconds: 10),
+//               () {
+//                 failAttempt = 0;
+//               },
+//             );
+//           }
+//         },
+//       ),
+//       orientation: AppOpenAd.orientationPortrait,
+//     );
+//   }
+// }
+
 class AppLifeCycle extends StatefulWidget {
   const AppLifeCycle({Key? key, required this.child}) : super(key: key);
-
   final Widget child;
 
   @override
   State<AppLifeCycle> createState() => _AppLifeCycleState();
 }
 
-class _AppLifeCycleState extends State<AppLifeCycle> with WidgetsBindingObserver {
-  AppOpenAdManager appOpenAdManager = AppOpenAdManager();
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // TODO: implement didChangeAppLifecycleState
-    super.didChangeAppLifecycleState(state);
-    switch (state) {
-      case AppLifecycleState.detached:
-        print("----   show 5");
-        break;
-      case AppLifecycleState.inactive:
-        print("----   show 6");
-        break;
-      case AppLifecycleState.paused:
-        print("----   show 7");
-        break;
-      case AppLifecycleState.resumed:
-        print("----   show 3");
-        if (appOpenAdManager.appOpenAd != null) {
-          print("----   show 4");
-          appOpenAdManager.appOpenAd?.show();
-        }
-        break;
-    }
-  }
+class _AppLifeCycleState extends State<AppLifeCycle> {
+  late AppLifecycleReactor _appLifecycleReactor;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    WidgetsBinding.instance.removeObserver(this);
+    AppOpenAdManager appOpenAdManager = AppOpenAdManager()..loadAd();
+    _appLifecycleReactor = AppLifecycleReactor(appOpenAdManager: appOpenAdManager);
+    _appLifecycleReactor.listenToAppStateChanges();
   }
 
   @override
@@ -87,56 +174,82 @@ class _AppLifeCycleState extends State<AppLifeCycle> with WidgetsBindingObserver
   }
 }
 
+
+
 class AppOpenAdManager {
-  AppOpenAdManager() {
-    print("----   load 1");
-    loadAppOpenAd();
-  }
+  String adUnitId = 'ca-app-pub-3940256099942544/3419835294';
 
-  int failAttempt = 0;
-  AppOpenAd? appOpenAd;
-  bool isShowingAd = false;
-
-  bool get isAdAvailable {
-    return appOpenAd != null;
-  }
+  AppOpenAd? _appOpenAd;
+  bool _isShowingAd = false;
 
   /// Load an AppOpenAd.
-  void loadAppOpenAd() {
+  void loadAd() {
     AppOpenAd.load(
-      adUnitId: "ca-app-pub-3940256099942544/3419835294",
+      adUnitId: adUnitId,
+      orientation: AppOpenAd.orientationPortrait,
       request: const AdRequest(),
       adLoadCallback: AppOpenAdLoadCallback(
         onAdLoaded: (ad) {
-          print("----   load 2");
-          appOpenAd = ad;
-          appOpenAd?.fullScreenContentCallback = FullScreenContentCallback(
-            onAdFailedToShowFullScreenContent: (ad, error) {},
-            onAdDismissedFullScreenContent: (ad) {
-              appOpenAd?.dispose();
-              appOpenAd = null;
-              loadAppOpenAd();
-            },
-            onAdClicked: (ad) {},
-            onAdImpression: (ad) {},
-            onAdShowedFullScreenContent: (ad) {},
-            onAdWillDismissFullScreenContent: (ad) {},
-          );
+          _appOpenAd = ad;
         },
         onAdFailedToLoad: (error) {
-          failAttempt++;
-          if (failAttempt <= 3) {
-            loadAppOpenAd();
-            Future.delayed(
-              const Duration(seconds: 10),
-              () {
-                failAttempt = 0;
-              },
-            );
-          }
+          // Handle the error.
         },
       ),
-      orientation: AppOpenAd.orientationPortrait,
     );
+  }
+
+  void showAdIfAvailable() {
+    if (!isAdAvailable) {
+      loadAd();
+      return;
+    }
+    if (_isShowingAd) {
+      return;
+    }
+    // Set the fullScreenContentCallback and show the ad.
+    _appOpenAd!.fullScreenContentCallback = FullScreenContentCallback(
+      onAdShowedFullScreenContent: (ad) {
+        _isShowingAd = true;
+      },
+      onAdFailedToShowFullScreenContent: (ad, error) {
+        _isShowingAd = false;
+        ad.dispose();
+        _appOpenAd = null;
+      },
+      onAdDismissedFullScreenContent: (ad) {
+        _isShowingAd = false;
+        ad.dispose();
+        _appOpenAd = null;
+        loadAd();
+      },
+    );
+
+    _appOpenAd?.show();
+
+  }
+
+  /// Whether an ad is available to be shown.
+  bool get isAdAvailable {
+    return _appOpenAd != null;
+  }
+}
+
+class AppLifecycleReactor {
+  final AppOpenAdManager appOpenAdManager;
+
+  AppLifecycleReactor({required this.appOpenAdManager});
+
+  void listenToAppStateChanges() {
+    AppStateEventNotifier.startListening();
+    AppStateEventNotifier.appStateStream.forEach((state) => _onAppStateChanged(state));
+  }
+
+  void _onAppStateChanged(AppState appState) {
+    // Try to show an app open ad if the app is being resumed and
+    // we're not already showing an app open ad.
+    if (appState == AppState.foreground) {
+      appOpenAdManager.showAdIfAvailable();
+    }
   }
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:my_scanner/components/common_button.dart';
 import 'package:my_scanner/utils/color_utils.dart';
 import 'package:my_scanner/utils/database_helper.dart';
@@ -146,6 +147,7 @@ class QrPreviewScreen extends StatelessWidget {
                         DataBaseHelper.realm.write(() {
                           DataBaseHelper.realm.delete<CreatedQRCode>(createdQRCode);
                         });
+                        Get.back(result: "getData");
                       },
                     ),
                   ),
