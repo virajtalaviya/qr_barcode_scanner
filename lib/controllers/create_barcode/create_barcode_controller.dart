@@ -74,7 +74,7 @@ class CreateBarcodeController extends GetxController {
     if (textEditingController.text.trim().isEmpty) {
       showSnackBar(context, "Please enter some text");
     } else if (snackBarContent.isNotEmpty) {
-      showSnackBar(context, snackBarContent);
+      showSnackBar(context, snackBarContent,4);
     } else {
       Get.to(
         () => EditCreatedBarcode(

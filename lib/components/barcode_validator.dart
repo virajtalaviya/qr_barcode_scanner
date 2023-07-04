@@ -391,19 +391,23 @@ class BarcodeValidator {
       }
       return "";
     } else if (symbology is EAN8) {
-      if (value.contains(RegExp(r'^(?=.*?[0-9]).{8}$'))) {
+      if ((RegExp(r'^(?=.*?[0-9]).{8}$').hasMatch(value))) {
         if (int.parse(value[7]) == getCheckSumData(value)) {
           return "";
         } else {
-          return "Invalid check digit at the trailing end.";
+          return "Invalid check digit at the trailing end. "
+              "Provide the valid check digit or remove it. "
+              "Since, it has been calculated automatically.";
           // throw ArgumentError('Invalid check digit at the trailing end. '
           //     'Provide the valid check digit or remove it. '
           //     'Since, it has been calculated automatically.');
         }
-      } else if (value.contains(RegExp(r'^(?=.*?[0-9]).{7}$'))) {
+      } else if (RegExp(r'^(?=.*?[0-9]).{7}$').hasMatch(value)) {
         return "";
       } else {
-        return "EAN8 supports only numeric characters.";
+        return "EAN8 supports only numeric characters. "
+            "The provided value should have 7 digits (without check digit) "
+            "or with 8 digits.";
         // throw ArgumentError('EAN8 supports only numeric characters.'
         //     ' The provided value should have 7 digits (without check digit)'
         //     ' or with 8 digits.');
@@ -415,13 +419,13 @@ class BarcodeValidator {
         if (int.parse(value[11]) == getCheckSumDataUPCA(value)) {
           return "";
         } else {
-          return "Invalid check digit at the trailing end.";
+          return "Invalid check digit at the trailing end. Provide the valid check digit or remove it. Since, it has been calculated automatically.";
           // throw ArgumentError('Invalid check digit at the trailing end.'
           //     ' Provide the valid check digit or remove it.'
           //     ' Since, it has been calculated automatically.');
         }
       } else {
-        return "UPCA supports only numeric characters.";
+        return "UPCA supports only numeric characters. The provided value should have 11 digits (without check digit) or with 12 digits.";
         // throw ArgumentError('UPCA supports only numeric characters. '
         //     'The provided value should have 11 digits (without check digit) '
         //     'or with 12 digits.');
@@ -430,7 +434,7 @@ class BarcodeValidator {
       if (value.contains(RegExp(r'^(?=.*?[0-9]).{6}$'))) {
         return "";
       }
-      return "UPCE supports only numeric characters.";
+      return "UPCE supports only numeric characters. The provided value should have 6 digits.";
       // throw ArgumentError('UPCE supports only numeric characters. '
       //     'The provided value should have 6 digits.');
     } else if (symbology is EAN13) {
@@ -438,7 +442,7 @@ class BarcodeValidator {
         if (int.parse(value[12]) == getCheckSumDataEAN13(value)) {
           return "";
         } else {
-          return "Invalid check digit at the trailing end.";
+          return "Invalid check digit at the trailing end. Provide the valid check digit or remove it. Since, it has been calculated automatically.";
           // throw ArgumentError('Invalid check digit at the trailing end. '
           //     'Provide the valid check digit or remove it. '
           //     'Since, it has been calculated automatically.');
@@ -446,7 +450,7 @@ class BarcodeValidator {
       } else if (value.contains(RegExp(r'^(?=.*?[0-9]).{12}$'))) {
         return "";
       } else {
-        return "EAN13 supports only numeric characters.";
+        return "EAN13 supports only numeric characters. The provided value should have 12 digits (without check digit) or with 13 digits.";
         // throw ArgumentError('EAN13 supports only numeric characters. '
         //     'The provided value should have 12 digits (without check digit) or'
         //     ' with 13 digits.');
