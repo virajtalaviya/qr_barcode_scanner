@@ -11,7 +11,8 @@ class CreateBarcodeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CreateBarcodeController createBarcodeController = Get.put(CreateBarcodeController());
+    CreateBarcodeController createBarcodeController =
+        Get.put(CreateBarcodeController());
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
@@ -62,11 +63,13 @@ class CreateBarcodeScreen extends StatelessWidget {
                     fontFamily: FontFamily.productSansRegular,
                     fontSize: 16,
                   ),
-                  items: createBarcodeController.createBarcodeDropDownContent.map((value) {
+                  items: createBarcodeController.createBarcodeDropDownContent
+                      .map((value) {
                     return DropdownMenuItem(
                       value: value.value,
                       onTap: () {
-                        createBarcodeController.currentValue.value = value.value;
+                        createBarcodeController.currentValue.value =
+                            value.value;
                         createBarcodeController.symbology = value.symbology;
                       },
                       child: Text(
@@ -105,11 +108,13 @@ class CreateBarcodeScreen extends StatelessWidget {
                     }),
                     Expanded(
                       child: TextField(
-                        controller: createBarcodeController.textEditingController,
+                        controller:
+                            createBarcodeController.textEditingController,
                         expands: true,
                         maxLines: null,
                         minLines: null,
-                        style: const TextStyle(fontFamily: FontFamily.productSansRegular),
+                        style: const TextStyle(
+                            fontFamily: FontFamily.productSansRegular),
                         cursorColor: ColorUtils.activeColor,
                         textAlign: TextAlign.start,
                         decoration: const InputDecoration(

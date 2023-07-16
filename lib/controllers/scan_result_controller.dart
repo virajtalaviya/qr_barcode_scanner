@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:my_scanner/components/audio_player_helper.dart';
 import 'package:my_scanner/utils/database_helper.dart';
 import 'package:my_scanner/utils/preference_utils.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ScanResultController extends GetxController {
   ScanResultController({required this.barcode, required this.context}) {
+
+
     if (PreferenceUtils.getAddScanHistoryValue(true)) {
       for (int i = 0; i < barcode.barcodes.length; i++) {
         DataBaseHelper.realm.write(() {
@@ -29,6 +33,29 @@ class ScanResultController extends GetxController {
     } else {
       AudioHelper.playAudio();
     }
+  }
+
+  NativeAd? nativeAd;
+
+  void loadNativeAD() {
+    nativeAd = NativeAd(
+      adUnitId: "ca-app-pub-3940256099942544/2247696110",
+      listener: NativeAdListener(
+        onAdImpression: (ad) {},
+        onAdClicked: (ad) {},
+        onAdFailedToLoad: (ad, error) {},
+        onAdClosed: (ad) {},
+        onAdLoaded: (ad) {},
+        onAdOpened: (ad) {},
+        onAdWillDismissScreen: (ad) {},
+        onPaidEvent: (ad, valueMicros, precision, currencyCode) {},
+      ),
+      request: const AdRequest(),
+      nativeTemplateStyle: NativeTemplateStyle(
+        templateType: TemplateType.medium,
+      ),
+    );
+    nativeAd?.load();
   }
 
   BarcodeCapture barcode;
@@ -74,7 +101,7 @@ class ScanResultController extends GetxController {
       case BarcodeType.email:
         return giveEmail(barcode.barcodes[index].email);
       case BarcodeType.isbn:
-        break;
+        return "${barcode.barcodes[index].rawValue}";
       case BarcodeType.phone:
         return givePhone(barcode.barcodes[index].phone);
       case BarcodeType.product:
@@ -92,7 +119,7 @@ class ScanResultController extends GetxController {
       case BarcodeType.driverLicense:
         return giveDrivingLicenseData(barcode.barcodes[index].driverLicense);
       case BarcodeType.unknown:
-        return "Nothing to show";
+        return "${barcode.barcodes[index].rawBytes}";
     }
     return "";
   }
@@ -288,6 +315,15 @@ class ScanResultController extends GetxController {
     return "n/a";
   }
 
+  void shareContent() {
+    String content = "";
+
+    for (int i = 0; i < barcode.barcodes.length; i++) {
+      content = content + currentContent(i);
+    }
+    Share.share(content);
+  }
+
   void copyGivenContent(BuildContext context, bool showSnackBar) async {
     String content = "";
 
@@ -306,5 +342,12 @@ class ScanResultController extends GetxController {
         );
       }
     }
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    loadNativeAD();
   }
 }

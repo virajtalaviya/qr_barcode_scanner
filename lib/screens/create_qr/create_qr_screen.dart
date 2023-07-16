@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:my_scanner/components/common_button.dart';
 import 'package:my_scanner/controllers/create_qr/create_qr_controller.dart';
 import 'package:my_scanner/utils/color_utils.dart';
@@ -160,6 +161,19 @@ class CreateQRScreen extends StatelessWidget {
                   },
                 ),
               ),
+              Obx(() {
+                return Container(
+                  constraints: const BoxConstraints(
+                    minWidth: 320, // minimum recommended width
+                    minHeight: 320, // minimum recommended height
+                    maxWidth: 400,
+                    maxHeight: 400,
+                  ),
+                  child: createQRController.nativeAdLoaded.value
+                      ? AdWidget(ad: createQRController.nativeAd)
+                      : const SizedBox(),
+                );
+              }),
             ],
           ),
         ),

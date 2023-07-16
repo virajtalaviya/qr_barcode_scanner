@@ -48,22 +48,31 @@ class EditCreatedBarcode extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () {
-                editCreatedBarcodeController.context = context;
-                editCreatedBarcodeController.title = type;
-                editCreatedBarcodeController.content = content;
-                if (editCreatedBarcodeController.interstitialAd != null) {
-                  editCreatedBarcodeController.interstitialAd?.show();
+                //    editCreatedBarcodeController.currentBottomWidget.value = "MainBottomContent";
+                //                             editCreatedBarcodeController.saveDoneButton.value = "Save";
+                if (editCreatedBarcodeController.saveDoneButton.value == "Done") {
+                  editCreatedBarcodeController.currentBottomWidget.value = "MainBottomContent";
+                  editCreatedBarcodeController.saveDoneButton.value = "Save";
                 } else {
-                  editCreatedBarcodeController.saveBarCode();
+                  editCreatedBarcodeController.context = context;
+                  editCreatedBarcodeController.title = type;
+                  editCreatedBarcodeController.content = content;
+                  if (editCreatedBarcodeController.interstitialAd != null) {
+                    editCreatedBarcodeController.interstitialAd?.show();
+                  } else {
+                    editCreatedBarcodeController.saveBarCode();
+                  }
                 }
               },
-              child: const Text(
-                "Save",
-                style: TextStyle(
-                  color: ColorUtils.activeColor,
-                  fontSize: 16,
-                ),
-              ),
+              child: Obx(() {
+                return Text(
+                  editCreatedBarcodeController.saveDoneButton.value,
+                  style: const TextStyle(
+                    color: ColorUtils.activeColor,
+                    fontSize: 16,
+                  ),
+                );
+              }),
             )
           ],
         ),
@@ -141,6 +150,7 @@ class EditCreatedBarcode extends StatelessWidget {
                           child: InkWell(
                             onTap: () {
                               editCreatedBarcodeController.currentBottomWidget.value = "ColorContent";
+                              editCreatedBarcodeController.saveDoneButton.value = "Done";
                             },
                             child: Center(
                               child: Column(
@@ -160,6 +170,7 @@ class EditCreatedBarcode extends StatelessWidget {
                           child: InkWell(
                             onTap: () {
                               editCreatedBarcodeController.currentBottomWidget.value = "FontContent";
+                              editCreatedBarcodeController.saveDoneButton.value = "Done";
                             },
                             child: Center(
                               child: Column(
@@ -283,6 +294,7 @@ class EditCreatedBarcode extends StatelessWidget {
                           child: TextButton(
                             onPressed: () {
                               editCreatedBarcodeController.currentBottomWidget.value = "MainBottomContent";
+                              editCreatedBarcodeController.saveDoneButton.value = "Save";
                             },
                             child: const Center(
                               child: Text(
@@ -347,6 +359,7 @@ class EditCreatedBarcode extends StatelessWidget {
                               child: IconButton(
                                 onPressed: () {
                                   editCreatedBarcodeController.textEditingController.clear();
+                                  editCreatedBarcodeController.displayText.value = "";
                                 },
                                 icon: const Icon(
                                   Icons.close,
@@ -408,6 +421,7 @@ class EditCreatedBarcode extends StatelessWidget {
                         child: TextButton(
                           onPressed: () {
                             editCreatedBarcodeController.currentBottomWidget.value = "MainBottomContent";
+                            editCreatedBarcodeController.saveDoneButton.value = "Save";
                           },
                           child: const Center(
                             child: Text(

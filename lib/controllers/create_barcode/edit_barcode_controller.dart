@@ -16,6 +16,7 @@ class EditCreatedBarcodeController extends GetxController {
   late BuildContext context;
   late String title;
   late String content;
+  RxString saveDoneButton = "Save".obs;
 
   RxString displayText = "Text entered will display here".obs;
   List<Color> codeFGBGColor = const [

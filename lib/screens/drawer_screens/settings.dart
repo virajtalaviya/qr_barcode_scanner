@@ -124,56 +124,56 @@ class Settings extends StatelessWidget {
             thickness: 1,
           ),
           const SizedBox(height: 25),
-          const Text(
-            "Focus",
-            style: TextStyle(
-              color: ColorUtils.activeColor,
-              fontSize: 16,
-              fontFamily: FontFamily.productSansBold,
-            ),
-          ),
-          Obx(() {
-            return Row(
-              children: [
-                Radio(
-                  value: "autoFocus",
-                  groupValue: settingsController.focus.value,
-                  onChanged: (value) {
-                    settingsController.focus.value = "autoFocus";
-                    PreferenceUtils.setFocus("autoFocus");
-                  },
-                  activeColor: ColorUtils.activeColor,
-                ),
-                const Text(
-                  "Auto Focus",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: FontFamily.productSansRegular,
-                  ),
-                ),
-                Radio(
-                  value: "touchFocus",
-                  groupValue: settingsController.focus.value,
-                  onChanged: (value) {
-                    settingsController.focus.value = "touchFocus";
-                    PreferenceUtils.setFocus("touchFocus");
-                  },
-                  activeColor: ColorUtils.activeColor,
-                ),
-                const Text(
-                  "Touch Focus",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: FontFamily.productSansRegular,
-                  ),
-                ),
-              ],
-            );
-          }),
-          const Divider(
-            color: ColorUtils.dividerColor,
-            thickness: 1,
-          ),
+          // const Text(
+          //   "Focus",
+          //   style: TextStyle(
+          //     color: ColorUtils.activeColor,
+          //     fontSize: 16,
+          //     fontFamily: FontFamily.productSansBold,
+          //   ),
+          // ),
+          // Obx(() {
+          //   return Row(
+          //     children: [
+          //       Radio(
+          //         value: "autoFocus",
+          //         groupValue: settingsController.focus.value,
+          //         onChanged: (value) {
+          //           settingsController.focus.value = "autoFocus";
+          //           PreferenceUtils.setFocus("autoFocus");
+          //         },
+          //         activeColor: ColorUtils.activeColor,
+          //       ),
+          //       const Text(
+          //         "Auto Focus",
+          //         style: TextStyle(
+          //           fontSize: 16,
+          //           fontFamily: FontFamily.productSansRegular,
+          //         ),
+          //       ),
+          //       Radio(
+          //         value: "touchFocus",
+          //         groupValue: settingsController.focus.value,
+          //         onChanged: (value) {
+          //           settingsController.focus.value = "touchFocus";
+          //           PreferenceUtils.setFocus("touchFocus");
+          //         },
+          //         activeColor: ColorUtils.activeColor,
+          //       ),
+          //       const Text(
+          //         "Touch Focus",
+          //         style: TextStyle(
+          //           fontSize: 16,
+          //           fontFamily: FontFamily.productSansRegular,
+          //         ),
+          //       ),
+          //     ],
+          //   );
+          // }),
+          // const Divider(
+          //   color: ColorUtils.dividerColor,
+          //   thickness: 1,
+          // ),
         ],
       ),
     );

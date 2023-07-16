@@ -21,6 +21,7 @@ class InternetConnection {
       await remoteConfig.fetchAndActivate();
       Constants.interstitialAdId = remoteConfig.getString("interstitial_ad_id");
       Constants.bannerAdId = remoteConfig.getString("banner_ad_id");
+      Constants.appOpenAd = remoteConfig.getString("app_open_ad");
     } catch (_) {}
   }
 

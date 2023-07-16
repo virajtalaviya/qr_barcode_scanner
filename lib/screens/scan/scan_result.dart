@@ -14,7 +14,7 @@ class ScanResult extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    ScanResultController scanResultController = Get.put(ScanResultController(barcode: barcodes,context: context));
+    ScanResultController scanResultController = Get.put(ScanResultController(barcode: barcodes, context: context));
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -131,7 +131,9 @@ class ScanResult extends StatelessWidget {
               children: [
                 Expanded(
                   child: CommonButton(
-                    onTap: () {},
+                    onTap: () {
+                      scanResultController.shareContent();
+                    },
                     title: "Share",
                     imagePath: ImagePaths.elevatedButtonShare,
                   ),
@@ -140,7 +142,7 @@ class ScanResult extends StatelessWidget {
                 Expanded(
                   child: CommonButton(
                     onTap: () {
-                      scanResultController.copyGivenContent(context,true);
+                      scanResultController.copyGivenContent(context, true);
                     },
                     title: "Copy",
                     imagePath: ImagePaths.elevatedButtonCopy,

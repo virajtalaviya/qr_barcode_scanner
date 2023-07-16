@@ -39,4 +39,33 @@ class ImagePaths {
   static const String elevatedButtonCopy = "assets/copy.png";
   static const String elevatedButtonCheck = "assets/check.png";
   static const String elevatedButtonDelete = "assets/delete_white.png";
+
+  static String qRBarcodeImageInHistory(String? title) {
+    if (title == "Product") {
+      return barcodeImage;
+    } else if (title == "Codabar") {
+      return barcodeImage;
+    } else if (title == "Code 39 Extended") {
+      return barcodeImage;
+    } else if (title == "Code 93") {
+      return barcodeImage;
+    } else if (title == "Code 128") {
+      return barcodeImage;
+    } else if (title == "Code 128A") {
+      return barcodeImage;
+    } else if (title == "Code 128B") {
+      return barcodeImage;
+    } else if (title == "Code 128C") {
+      return barcodeImage;
+    } else if (title == "EAN-8") {
+      return barcodeImage;
+    } else if (title == "UPC-A") {
+      return barcodeImage;
+    } else if (title == "UPC-E") {
+      return barcodeImage;
+    } else if (title == "EAN-13") {
+      return barcodeImage;
+    }
+    return qrImage;
+  }
 }

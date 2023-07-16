@@ -15,41 +15,20 @@ class HistoryController extends GetxController {
   RealmResults<QRDatabase>? realmResultsQRDatabase;
   RealmResults<CreatedQRCode>? realmResultsCreatedQRCode;
 
+  void deleteScannedQRCode(int index) {
+    DataBaseHelper.realm.write(() {
+      DataBaseHelper.realm.delete<QRDatabase>(realmResultsQRDatabase![index]);
+    });
+    getScannedQR();
+  }
+
   void getScannedQR() {
     gotScannedData.value = false;
     realmResultsQRDatabase = DataBaseHelper.realm.all<QRDatabase>();
     gotScannedData.value = true;
   }
 
-  // void showDeletedQrCode() {
-  //   Get.dialog(
-  //     AlertDialog(
-  //       content: Column(
-  //         mainAxisSize: MainAxisSize.min,
-  //         children: [
-  //           Icon(
-  //             Icons.delete,
-  //             color: ColorUtils.activeColor,
-  //           ),
-  //           Text(
-  //             "Are you sure, you want to delete this code",
-  //             style: TextStyle(
-  //               fontFamily: FontFamily.productSansRegular,
-  //               fontSize: 16,
-  //             ),
-  //           ),
-  //           Row(
-  //             children: [
-  //
-  //             ],
-  //           )
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  void deleteQRCodeData(int index) {
+  void deleteCreatedQRCode(int index) {
     DataBaseHelper.realm.write(() {
       DataBaseHelper.realm.delete<CreatedQRCode>(realmResultsCreatedQRCode![index]);
     });
@@ -63,7 +42,6 @@ class HistoryController extends GetxController {
   }
 
   void shareQRImage(String data) async {
-
     List<int> memoryData = data.split(',').map(int.parse).toList();
 
     final Directory temporaryDirectory = await getTemporaryDirectory();
@@ -73,7 +51,6 @@ class HistoryController extends GetxController {
     File(path).writeAsBytesSync(memoryData);
 
     await Share.shareXFiles([XFile(path)]);
-
   }
 
   @override

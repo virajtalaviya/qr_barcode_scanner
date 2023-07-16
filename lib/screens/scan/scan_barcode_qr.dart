@@ -60,6 +60,9 @@ class ScanBarcodeAndQR extends StatelessWidget {
                 MobileScanner(
                   controller: scanBarcodeQRController.mobileScannerController,
                   onDetect: (barcodes) {
+                    if (scanBarcodeQRController.isTorchOn.value == true) {
+                      scanBarcodeQRController.mobileScannerController.toggleTorch();
+                    }
                     Get.to(() => ScanResult(barcodes: barcodes));
                   },
                 ),

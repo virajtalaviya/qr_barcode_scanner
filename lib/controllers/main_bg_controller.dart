@@ -84,6 +84,7 @@ class MainBGController extends GetxController {
     DrawerElements(
       icon: ImagePaths.drawerSetting,
       title: "Settings",
+     
     ),
   ];
 
