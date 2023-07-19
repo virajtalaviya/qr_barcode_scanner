@@ -10,6 +10,8 @@ import 'package:my_scanner/utils/image_paths.dart';
 import 'package:my_scanner/widgets/custom_app_bars/history_app_bar.dart';
 import 'package:my_scanner/widgets/custom_app_bars/home_app_bar.dart';
 import 'package:my_scanner/widgets/custom_app_bars/settings_app_bar.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class MainBGController extends GetxController {
   Widget? currentWidget;
@@ -84,7 +86,6 @@ class MainBGController extends GetxController {
     DrawerElements(
       icon: ImagePaths.drawerSetting,
       title: "Settings",
-     
     ),
   ];
 
@@ -102,10 +103,13 @@ class MainBGController extends GetxController {
         update();
         break;
       case 2:
+        launchUrlString(Constants.appPlayStoreURL,mode: LaunchMode.externalApplication);
         break;
       case 3:
+        Share.share(Constants.appPlayStoreURL);
         break;
       case 4:
+        launchUrlString(Constants.appPlayStoreURL,mode: LaunchMode.externalApplication);
         break;
       case 5:
         currentWidget = const Settings();
