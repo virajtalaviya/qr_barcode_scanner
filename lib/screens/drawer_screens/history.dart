@@ -38,6 +38,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
           Container(
             width: 250,
             height: 50,
+        
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 4),
             decoration: BoxDecoration(
               color: ColorUtils.tbBGColor,
@@ -64,11 +65,14 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                   ),
                 ),
               ],
+
               unselectedLabelColor: Colors.black,
               unselectedLabelStyle: const TextStyle(
                 fontFamily: FontFamily.productSansBold,
               ),
+
               indicator: BoxDecoration(
+
                 borderRadius: BorderRadius.circular(6),
                 color: ColorUtils.activeColor,
               ),
