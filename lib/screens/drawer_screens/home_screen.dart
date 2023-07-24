@@ -15,7 +15,9 @@ class HomeScreen extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
     HomeController homeController = Get.put(HomeController());
     return SingleChildScrollView(
+     
       child: Padding(
+      
         padding: const EdgeInsets.only(left: 15, right: 15),
         child: Column(
           children: [
@@ -31,6 +33,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             Row(
+              
               children: [
                 CommonBox(
                   path: ImagePaths.createQR,

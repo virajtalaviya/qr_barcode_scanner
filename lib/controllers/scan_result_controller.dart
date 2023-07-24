@@ -10,8 +10,6 @@ import 'package:share_plus/share_plus.dart';
 
 class ScanResultController extends GetxController {
   ScanResultController({required this.barcode, required this.context}) {
-
-
     if (PreferenceUtils.getAddScanHistoryValue(true)) {
       for (int i = 0; i < barcode.barcodes.length; i++) {
         DataBaseHelper.realm.write(() {
@@ -105,7 +103,7 @@ class ScanResultController extends GetxController {
       case BarcodeType.phone:
         return givePhone(barcode.barcodes[index].phone);
       case BarcodeType.product:
-        break;
+        return barcode.barcodes[index].rawValue ?? "";
       case BarcodeType.sms:
         return giveSMS(barcode.barcodes[index].sms);
       case BarcodeType.text:
@@ -119,9 +117,8 @@ class ScanResultController extends GetxController {
       case BarcodeType.driverLicense:
         return giveDrivingLicenseData(barcode.barcodes[index].driverLicense);
       case BarcodeType.unknown:
-        return "${barcode.barcodes[index].rawBytes}";
+        return "${barcode.barcodes[index].rawValue}";
     }
-    return "";
   }
 
   String contactInfo(ContactInfo? contactInfo) {

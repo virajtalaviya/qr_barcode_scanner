@@ -7,10 +7,9 @@ import 'package:my_scanner/screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try{
+  try {
     await Firebase.initializeApp();
-  }
-  catch(_){}
+  } catch (_) {}
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((value) {
     runApp(const MyApp());

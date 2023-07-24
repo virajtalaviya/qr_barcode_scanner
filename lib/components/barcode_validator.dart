@@ -2,34 +2,19 @@ import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 
 class BarcodeValidator {
   static int getCheckSumDataEAN13(String value) {
-    final int sum1 = 3 *
-        (int.parse(value[11]) +
-            int.parse(value[9]) +
-            int.parse(value[7]) +
-            int.parse(value[5]) +
-            int.parse(value[3]) +
-            int.parse(value[1]));
-    final int sum2 = int.parse(value[10]) +
-        int.parse(value[8]) +
-        int.parse(value[6]) +
-        int.parse(value[4]) +
-        int.parse(value[2]) +
-        int.parse(value[0]);
+    final int sum1 =
+        3 * (int.parse(value[11]) + int.parse(value[9]) + int.parse(value[7]) + int.parse(value[5]) + int.parse(value[3]) + int.parse(value[1]));
+    final int sum2 =
+        int.parse(value[10]) + int.parse(value[8]) + int.parse(value[6]) + int.parse(value[4]) + int.parse(value[2]) + int.parse(value[0]);
     final int checkSumValue = sum1 + sum2;
     final int checkSumDigit = (10 - checkSumValue) % 10;
     return checkSumDigit;
   }
 
   static int getCheckSumDataUPCA(String value) {
-    final int sum1 = 3 *
-        (int.parse(value[0]) +
-            int.parse(value[2]) +
-            int.parse(value[4]) +
-            int.parse(value[6]) +
-            int.parse(value[8]) +
-            int.parse(value[10]));
-    final int sum2 =
-        int.parse(value[9]) + int.parse(value[7]) + int.parse(value[5]) + int.parse(value[3]) + int.parse(value[1]);
+    final int sum1 =
+        3 * (int.parse(value[0]) + int.parse(value[2]) + int.parse(value[4]) + int.parse(value[6]) + int.parse(value[8]) + int.parse(value[10]));
+    final int sum2 = int.parse(value[9]) + int.parse(value[7]) + int.parse(value[5]) + int.parse(value[3]) + int.parse(value[1]);
     final int checkSumValue = sum1 + sum2;
     return (10 - checkSumValue % 10) % 10;
   }
@@ -96,11 +81,7 @@ class BarcodeValidator {
   static String validateBarcodeText(Symbology symbology, String value) {
     if (symbology is Codabar) {
       for (int i = 0; i < value.length; i++) {
-        if (!_codeBarMap.containsKey(value[i]) ||
-            value[i] == 'A' ||
-            value[i] == 'B' ||
-            value[i] == 'C' ||
-            value[i] == 'D') {
+        if (!_codeBarMap.containsKey(value[i]) || value[i] == 'A' || value[i] == 'B' || value[i] == 'C' || value[i] == 'D') {
           return "The provided input cannot be encoded : ${value[i]}";
         }
       }
@@ -109,6 +90,9 @@ class BarcodeValidator {
       for (int i = 0; i < value.length; i++) {
         if (value[i].codeUnitAt(0) > 127) {
           return "The provided input cannot be encoded : ${value[i]}";
+        }
+        if (value[i] == " ") {
+          return "The provided input cannot be encoded";
         }
       }
       return "";

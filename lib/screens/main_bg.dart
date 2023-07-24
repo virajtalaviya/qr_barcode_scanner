@@ -19,6 +19,7 @@ class MainBG extends StatelessWidget {
           controller.currentAppBar ??= HomeAppBar(scaffoldKey: scaffoldKey);
           return Scaffold(
             key: scaffoldKey,
+            
             backgroundColor: Colors.white,
             appBar: controller.currentAppBar,
             drawer: Drawer(

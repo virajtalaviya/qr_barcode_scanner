@@ -21,7 +21,6 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     tabController = TabController(length: 2, vsync: this);
   }
@@ -38,7 +37,6 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
           Container(
             width: 250,
             height: 50,
-        
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 4),
             decoration: BoxDecoration(
               color: ColorUtils.tbBGColor,
@@ -47,6 +45,9 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
             ),
             child: TabBar(
               controller: tabController,
+              automaticIndicatorColorAdjustment: false,
+              enableFeedback: true,
+              labelColor: Colors.white,
               tabs: const [
                 Tab(
                   child: Text(
@@ -65,14 +66,12 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                   ),
                 ),
               ],
-
               unselectedLabelColor: Colors.black,
               unselectedLabelStyle: const TextStyle(
                 fontFamily: FontFamily.productSansBold,
               ),
-
+              indicatorSize: TabBarIndicatorSize.tab,
               indicator: BoxDecoration(
-
                 borderRadius: BorderRadius.circular(6),
                 color: ColorUtils.activeColor,
               ),
@@ -133,11 +132,7 @@ class HistoryPageCreated extends StatelessWidget {
                       ),
                       child: GestureDetector(
                         onTap: () async {
-                          List<int> imageBytes = historyController.realmResultsCreatedQRCode![index].bytes
-                                  ?.split(',')
-                                  .map(int.parse)
-                                  .toList() ??
-                              [];
+                          List<int> imageBytes = historyController.realmResultsCreatedQRCode![index].bytes?.split(',').map(int.parse).toList() ?? [];
                           Uint8List qrImageData = Uint8List.fromList(imageBytes);
                           final result = await Get.to(
                             () => QrPreviewScreenForCreated(
@@ -339,8 +334,7 @@ class HistoryPageScanned extends StatelessWidget {
                               return [
                                 PopupMenuItem(
                                   onTap: () {
-                                    Share.share(
-                                        (historyController.realmResultsQRDatabase?[index].description ?? "").trim());
+                                    Share.share((historyController.realmResultsQRDatabase?[index].description ?? "").trim());
                                   },
                                   padding: const EdgeInsets.only(left: 10, right: 15),
                                   child: Row(
@@ -364,8 +358,7 @@ class HistoryPageScanned extends StatelessWidget {
                                 ),
                                 PopupMenuItem(
                                   onTap: () async {
-                                    String content =
-                                        (historyController.realmResultsQRDatabase?[index].description ?? "").trim();
+                                    String content = (historyController.realmResultsQRDatabase?[index].description ?? "").trim();
                                     await Clipboard.setData(ClipboardData(text: content));
                                     if (context.mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(

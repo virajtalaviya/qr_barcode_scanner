@@ -50,6 +50,7 @@ dependencies:
   firebase_core: ^2.14.0
   connectivity_plus: ^4.0.1
   url_launcher: ^6.1.12
+  permission_handler: ^10.4.3
 
 dev_dependencies:
   flutter_test:
@@ -66,7 +67,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/curved_logo.png"
+  image_path: "assets/launcher_icon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -87,6 +87,7 @@ class Settings extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontFamily: FontFamily.productSansRegular,
+            
                   ),
                 ),
               ],
