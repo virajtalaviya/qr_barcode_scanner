@@ -21,8 +21,6 @@ class SplashController extends GetxController {
     _appLifecycleReactor.listenToAppStateChanges();
   }
 
-
-
   getRemoteConfig() async {
     try {
       await remoteConfig.setConfigSettings(
@@ -79,7 +77,6 @@ class SplashController extends GetxController {
 }
 
 class AppOpenAdManager {
-
   AppOpenAd? _appOpenAd;
   bool _isShowingAd = false;
 
@@ -136,6 +133,7 @@ class AppOpenAdManager {
     return _appOpenAd != null;
   }
 }
+
 class AppLifecycleReactor {
   final AppOpenAdManager appOpenAdManager;
 

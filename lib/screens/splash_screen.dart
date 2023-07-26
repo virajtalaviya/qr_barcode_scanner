@@ -27,6 +27,7 @@ class SplashScreen extends StatelessWidget {
                           color: ColorUtils.splashLogoBG,
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(color: ColorUtils.splashLogoBorder),
+                          image: const DecorationImage(image: AssetImage("assets/logo_qr_scanner.png")),
                         ),
                       ),
                       const SizedBox(height: 27),

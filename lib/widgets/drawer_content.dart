@@ -46,6 +46,7 @@ class DrawerContent extends StatelessWidget {
                         border: Border.all(
                           color: ColorUtils.splashLogoBorder,
                         ),
+                        image: const DecorationImage(image: AssetImage("assets/logo_qr_scanner.png")),
                       ),
                     ),
                     const SizedBox(height: 27),
@@ -70,6 +71,7 @@ class DrawerContent extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return ListTile(
                       onTap: () {
+                        mainBGController.context = context;
                         mainBGController.currentIndex = index;
                         mainBGController.scaffoldKey = scaffoldKey;
                         if (index == 0 || index == 1 || index == 5) {

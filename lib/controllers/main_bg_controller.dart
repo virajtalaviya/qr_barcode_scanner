@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:my_scanner/components/common_snackbar.dart';
 import 'package:my_scanner/controllers/drawer_section_controllers/history_controller.dart';
 import 'package:my_scanner/screens/drawer_screens/history.dart';
 import 'package:my_scanner/screens/drawer_screens/home_screen.dart';
@@ -14,6 +15,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class MainBGController extends GetxController {
+  late BuildContext context;
   Widget? currentWidget;
   PreferredSizeWidget? currentAppBar;
   HistoryController historyController = Get.put(HistoryController());
@@ -103,13 +105,25 @@ class MainBGController extends GetxController {
         update();
         break;
       case 2:
-        launchUrlString(Constants.appPlayStoreURL,mode: LaunchMode.externalApplication);
+        if (Constants.appPlayStoreURL == "") {
+          showSnackBar(context, "Can not open play store to give feedback, make sure you are connected to internet and retry after some time");
+        } else {
+          launchUrlString(Constants.appPlayStoreURL, mode: LaunchMode.externalApplication);
+        }
         break;
       case 3:
-        Share.share(Constants.appPlayStoreURL);
+        if (Constants.appPlayStoreURL == "") {
+          showSnackBar(context, "Can not share this app, make sure you are connected to internet and retry after some time");
+        } else {
+          Share.share(Constants.appPlayStoreURL);
+        }
         break;
       case 4:
-        launchUrlString(Constants.appPlayStoreURL,mode: LaunchMode.externalApplication);
+        if (Constants.appPlayStoreURL == "") {
+          showSnackBar(context, "Can not open play store to give rate, make sure you are connected to internet and retry after some time");
+        } else {
+          launchUrlString(Constants.appPlayStoreURL, mode: LaunchMode.externalApplication);
+        }
         break;
       case 5:
         currentWidget = const Settings();
