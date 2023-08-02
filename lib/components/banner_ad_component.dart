@@ -23,6 +23,9 @@ class _BannerComponentState extends State<BannerComponent> {
             loadBanner();
           }
         },
+        onAdLoaded: (ad) {
+          setState(() {});
+        },
       ),
       request: const AdRequest(),
     );
@@ -35,7 +38,6 @@ class _BannerComponentState extends State<BannerComponent> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (Constants.bannerAdId != "") {
       loadBanner();
@@ -45,7 +47,7 @@ class _BannerComponentState extends State<BannerComponent> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: Constants.bannerAdId == "" ? 0 : 50,
+      height: AdSize.banner.height.toDouble(),
       child: bannerAd != null ? AdWidget(ad: bannerAd!) : const SizedBox(),
     );
   }

@@ -16,7 +16,6 @@ class SettingsController extends GetConnect {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     setValuesFromPreference();
   }
 }

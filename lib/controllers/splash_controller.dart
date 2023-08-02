@@ -4,7 +4,6 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:my_scanner/components/audio_player_helper.dart';
-import 'package:my_scanner/components/internet_connection.dart';
 import 'package:my_scanner/screens/main_bg.dart';
 import 'package:my_scanner/utils/constants.dart';
 import 'package:my_scanner/utils/database_helper.dart';
@@ -55,10 +54,10 @@ class SplashController extends GetxController {
     PreferenceUtils.initPreference();
     DataBaseHelper.initDatabase();
     AudioHelper.loadAsset();
-    getRemoteConfig();
-    if (await isConnectedToInternet() == false) {
-      InternetConnection.addListener();
-    }
+    // getRemoteConfig();
+    // if (await isConnectedToInternet() == false) {
+    // InternetConnection.addListener();
+    // }
 
     Future.delayed(
       const Duration(seconds: 5),
@@ -68,10 +67,22 @@ class SplashController extends GetxController {
     );
   }
 
+  void assignURLS() {
+    Constants.interstitialAdId = "ca-app-pub-4980262775196753/3960011139";
+    //remoteConfig.getString("interstitial_ad_id");
+    Constants.bannerAdId = "ca-app-pub-4980262775196753/9344145858";
+    //remoteConfig.getString("banner_ad_id");
+    Constants.appOpenAd = "ca-app-pub-4980262775196753/8418130892";
+    //remoteConfig.getString("app_open_ad");
+    Constants.appPlayStoreURL = "https://play.google.com/store/apps/details?id=com.app.qrbarscanner";
+    //remoteConfig.getString("appPlayStoreURL");
+    initialiseAppOpenAD();
+  }
+
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
+    assignURLS();
     doSplashAdministration();
   }
 }

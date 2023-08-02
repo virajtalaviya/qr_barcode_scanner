@@ -6,7 +6,7 @@
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
-        android:label="Scanner"
+        android:label="QuickScanX"
         android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"
@@ -35,6 +35,9 @@
             android:value="2" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-4980262775196753~7959746145"/>
+       <!-- <meta-data
+            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
+            android:value="true" /> -->
     </application>
 </manifest>

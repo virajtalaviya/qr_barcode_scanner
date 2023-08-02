@@ -12,7 +12,6 @@ import 'package:my_scanner/utils/constants.dart';
 import 'package:my_scanner/utils/database_helper.dart';
 
 class EditCreatedBarcodeController extends GetxController {
-
   late BuildContext context;
   late String title;
   late String content;
@@ -141,7 +140,6 @@ class EditCreatedBarcodeController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
     if (Constants.interstitialAdId != "") {
       loadInterstitialAD();

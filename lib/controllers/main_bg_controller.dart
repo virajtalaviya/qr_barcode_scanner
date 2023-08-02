@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -6,7 +8,9 @@ import 'package:my_scanner/controllers/drawer_section_controllers/history_contro
 import 'package:my_scanner/screens/drawer_screens/history.dart';
 import 'package:my_scanner/screens/drawer_screens/home_screen.dart';
 import 'package:my_scanner/screens/drawer_screens/settings.dart';
+import 'package:my_scanner/utils/color_utils.dart';
 import 'package:my_scanner/utils/constants.dart';
+import 'package:my_scanner/utils/font_family.dart';
 import 'package:my_scanner/utils/image_paths.dart';
 import 'package:my_scanner/widgets/custom_app_bars/history_app_bar.dart';
 import 'package:my_scanner/widgets/custom_app_bars/home_app_bar.dart';
@@ -133,13 +137,60 @@ class MainBGController extends GetxController {
     }
   }
 
+  Future<bool> isConnectedToInternet() async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      } else {
+        return false;
+      }
+    } on SocketException catch (_) {
+      return false;
+    }
+  }
+
+  void showInternetPopUp() async {
+    bool ifItHasInternet = await isConnectedToInternet();
+    if (ifItHasInternet == false) {
+      Get.dialog(
+        AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          content: const Text(
+            "Turn on internet for better experience",
+            style: TextStyle(
+              fontFamily: FontFamily.productSansRegular,
+              fontSize: 20,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text(
+                "OK",
+                style: TextStyle(
+                  color: ColorUtils.activeColor,
+                  fontFamily: FontFamily.productSansRegular,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
     if (Constants.interstitialAdId != "") {
       loadInterstitialAD();
     }
+    showInternetPopUp();
   }
 }
 

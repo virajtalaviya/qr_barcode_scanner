@@ -55,7 +55,6 @@ class HistoryController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
     getScannedQR();
     getCreatedQRCode();

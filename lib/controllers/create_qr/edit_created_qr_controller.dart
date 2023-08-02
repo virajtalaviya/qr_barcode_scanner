@@ -135,7 +135,6 @@ class EditCreatedQRController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
     if (Constants.interstitialAdId != "") {
       loadInterstitialAD();

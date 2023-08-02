@@ -96,13 +96,6 @@ class CreateQRController extends GetxController {
     );
     nativeAd.load();
   }
-
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
-    // loadNativeAD();
-  }
 }
 
 class CreateQRDropDownContent {
