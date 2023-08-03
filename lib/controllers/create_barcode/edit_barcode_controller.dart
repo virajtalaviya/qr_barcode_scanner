@@ -76,10 +76,13 @@ class EditCreatedBarcodeController extends GetxController {
         onAdLoaded: (ad) {
           interstitialAd = ad;
           interstitialAd?.fullScreenContentCallback = FullScreenContentCallback(
-            onAdShowedFullScreenContent: (ad) {},
+            onAdShowedFullScreenContent: (ad) {
+              Constants.showAppOpen = false;
+            },
             onAdImpression: (ad) {},
             onAdClicked: (ad) {},
             onAdDismissedFullScreenContent: (ad) {
+              Constants.showAppOpen = true;
               saveBarCode();
               interstitialAd?.dispose();
               interstitialAd = null;

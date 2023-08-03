@@ -72,10 +72,13 @@ class EditCreatedQRController extends GetxController {
         onAdLoaded: (ad) {
           interstitialAd = ad;
           interstitialAd?.fullScreenContentCallback = FullScreenContentCallback(
-            onAdShowedFullScreenContent: (ad) {},
+            onAdShowedFullScreenContent: (ad) {
+              Constants.showAppOpen = false;
+            },
             onAdImpression: (ad) {},
             onAdClicked: (ad) {},
             onAdDismissedFullScreenContent: (ad) {
+              Constants.showAppOpen = true;
               saveQRCode();
               interstitialAd?.dispose();
               interstitialAd = null;

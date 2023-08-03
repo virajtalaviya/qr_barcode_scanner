@@ -20,22 +20,22 @@ class SplashController extends GetxController {
     _appLifecycleReactor.listenToAppStateChanges();
   }
 
-  getRemoteConfig() async {
-    try {
-      await remoteConfig.setConfigSettings(
-        RemoteConfigSettings(
-          fetchTimeout: const Duration(seconds: 10),
-          minimumFetchInterval: const Duration(seconds: 30),
-        ),
-      );
-      await remoteConfig.fetchAndActivate();
-      Constants.interstitialAdId = remoteConfig.getString("interstitial_ad_id");
-      Constants.bannerAdId = remoteConfig.getString("banner_ad_id");
-      Constants.appOpenAd = remoteConfig.getString("app_open_ad");
-      Constants.appPlayStoreURL = remoteConfig.getString("appPlayStoreURL");
-      initialiseAppOpenAD();
-    } catch (_) {}
-  }
+  // getRemoteConfig() async {
+  //   try {
+  //     await remoteConfig.setConfigSettings(
+  //       RemoteConfigSettings(
+  //         fetchTimeout: const Duration(seconds: 10),
+  //         minimumFetchInterval: const Duration(seconds: 30),
+  //       ),
+  //     );
+  //     await remoteConfig.fetchAndActivate();
+  //     Constants.interstitialAdId = remoteConfig.getString("interstitial_ad_id");
+  //     Constants.bannerAdId = remoteConfig.getString("banner_ad_id");
+  //     Constants.appOpenAd = remoteConfig.getString("app_open_ad");
+  //     Constants.appPlayStoreURL = remoteConfig.getString("appPlayStoreURL");
+  //     initialiseAppOpenAD();
+  //   } catch (_) {}
+  // }
 
   Future<bool> isConnectedToInternet() async {
     try {
@@ -67,22 +67,22 @@ class SplashController extends GetxController {
     );
   }
 
-  void assignURLS() {
-    Constants.interstitialAdId = "ca-app-pub-4980262775196753/3960011139";
-    //remoteConfig.getString("interstitial_ad_id");
-    Constants.bannerAdId = "ca-app-pub-4980262775196753/9344145858";
-    //remoteConfig.getString("banner_ad_id");
-    Constants.appOpenAd = "ca-app-pub-4980262775196753/8418130892";
-    //remoteConfig.getString("app_open_ad");
-    Constants.appPlayStoreURL = "https://play.google.com/store/apps/details?id=com.app.qrbarscanner";
-    //remoteConfig.getString("appPlayStoreURL");
-    initialiseAppOpenAD();
-  }
+  // void assignURLS() {
+  //   Constants.interstitialAdId = "ca-app-pub-4980262775196753/3960011139";
+  //   //remoteConfig.getString("interstitial_ad_id");
+  //   Constants.bannerAdId = "ca-app-pub-4980262775196753/9344145858";
+  //   //remoteConfig.getString("banner_ad_id");
+  //   Constants.appOpenAd = "ca-app-pub-4980262775196753/8418130892";
+  //   //remoteConfig.getString("app_open_ad");
+  //   Constants.appPlayStoreURL = "https://play.google.com/store/apps/details?id=com.app.qrbarscanner";
+  //   //remoteConfig.getString("appPlayStoreURL");
+  //   initialiseAppOpenAD();
+  // }
 
   @override
   void onInit() {
     super.onInit();
-    assignURLS();
+    initialiseAppOpenAD();
     doSplashAdministration();
   }
 }
@@ -159,7 +159,9 @@ class AppLifecycleReactor {
     // Try to show an app open ad if the app is being resumed and
     // we're not already showing an app open ad.
     if (appState == AppState.foreground) {
-      appOpenAdManager.showAdIfAvailable();
+      if (Constants.showAppOpen) {
+        appOpenAdManager.showAdIfAvailable();
+      }
     }
   }
 }

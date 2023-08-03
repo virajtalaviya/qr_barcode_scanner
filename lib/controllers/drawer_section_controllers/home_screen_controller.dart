@@ -29,10 +29,13 @@ class HomeController extends GetxController {
         onAdLoaded: (ad) {
           interstitialAd = ad;
           interstitialAd?.fullScreenContentCallback = FullScreenContentCallback(
-            onAdShowedFullScreenContent: (ad) {},
+            onAdShowedFullScreenContent: (ad) {
+              Constants.showAppOpen = false;
+            },
             onAdImpression: (ad) {},
             onAdClicked: (ad) {},
             onAdDismissedFullScreenContent: (ad) {
+              Constants.showAppOpen = true;
               navigation();
               interstitialAd?.dispose();
               interstitialAd = null;
@@ -59,7 +62,6 @@ class HomeController extends GetxController {
       ),
     );
   }
-
 
   @override
   void onInit() {
