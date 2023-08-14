@@ -52,11 +52,16 @@ class CreateQRController extends GetxController {
       adUnitId: "ca-app-pub-3940256099942544/2247696110",
       factoryId: 'listTile',
       listener: NativeAdListener(
-        onAdImpression: (ad) {},
+        onAdImpression: (ad) {
+
+        },
         onAdClicked: (ad) {},
-        onAdFailedToLoad: (ad, error) {},
+        onAdFailedToLoad: (ad, error) {
+          print("=====================   native ad failed to load===========================================");
+        },
         onAdClosed: (ad) {},
         onAdLoaded: (ad) {
+          print("=====================  loaded  ===========================================");
           nativeAdLoaded.value = true;
         },
         onAdOpened: (ad) {},
@@ -95,6 +100,13 @@ class CreateQRController extends GetxController {
       // ),
     );
     nativeAd.load();
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    loadNativeAD();
   }
 }
 
