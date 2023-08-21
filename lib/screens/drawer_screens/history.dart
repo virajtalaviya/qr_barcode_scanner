@@ -105,7 +105,7 @@ class HistoryPageCreated extends StatelessWidget {
     return Obx(() {
       return historyController.gotCreatedData.value == false
           ? const Center(child: CircularProgressIndicator())
-          : (historyController.realmResultsCreatedQRCode?.length ?? 0) == 0
+          : historyController.createdCode.isEmpty
               ? const Center(
                   child: Text(
                     "No created code found!",
@@ -117,7 +117,7 @@ class HistoryPageCreated extends StatelessWidget {
                   ),
                 )
               : ListView.builder(
-                  itemCount: historyController.realmResultsCreatedQRCode?.length ?? 0,
+                  itemCount: historyController.createdCode.length,
                   padding: const EdgeInsets.all(15),
                   itemBuilder: (context, index) {
                     return Container(
@@ -132,11 +132,11 @@ class HistoryPageCreated extends StatelessWidget {
                       ),
                       child: GestureDetector(
                         onTap: () async {
-                          List<int> imageBytes = historyController.realmResultsCreatedQRCode![index].bytes?.split(',').map(int.parse).toList() ?? [];
+                          List<int> imageBytes = historyController.createdCode[index].bytes?.split(',').map(int.parse).toList() ?? [];
                           Uint8List qrImageData = Uint8List.fromList(imageBytes);
                           final result = await Get.to(
                             () => QrPreviewScreenForCreated(
-                              createdQRCode: historyController.realmResultsCreatedQRCode![index],
+                              createdQRCode: historyController.createdCode[index],
                               qrImage: qrImageData,
                             ),
                           );
@@ -153,7 +153,7 @@ class HistoryPageCreated extends StatelessWidget {
                                 const SizedBox(width: 10),
                                 Image.asset(
                                   ImagePaths.qRBarcodeImageInHistory(
-                                    historyController.realmResultsCreatedQRCode?[index].title,
+                                    historyController.createdCode[index].title,
                                   ),
                                   height: 50,
                                   width: 50,
@@ -163,7 +163,7 @@ class HistoryPageCreated extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      historyController.realmResultsCreatedQRCode?[index].title ?? "",
+                                      historyController.createdCode[index].title ?? "",
                                       style: const TextStyle(
                                         fontFamily: FontFamily.productSansBold,
                                         fontSize: 16,
@@ -173,7 +173,7 @@ class HistoryPageCreated extends StatelessWidget {
                                       height: 20,
                                       width: MediaQuery.of(context).size.width * 0.5,
                                       child: Text(
-                                        historyController.realmResultsCreatedQRCode?[index].content ?? "",
+                                        historyController.createdCode[index].content ?? "",
                                         style: const TextStyle(
                                           fontFamily: FontFamily.productSansRegular,
                                           fontSize: 14,
@@ -192,7 +192,7 @@ class HistoryPageCreated extends StatelessWidget {
                                   PopupMenuItem(
                                     onTap: () {
                                       historyController.shareQRImage(
-                                        historyController.realmResultsCreatedQRCode?[index].bytes ?? "",
+                                        historyController.createdCode[index].bytes ?? "",
                                       );
                                     },
                                     padding: const EdgeInsets.only(left: 10, right: 15),
@@ -262,7 +262,7 @@ class HistoryPageScanned extends StatelessWidget {
     return Obx(() {
       return historyController.gotScannedData.value == false
           ? const Center(child: CircularProgressIndicator())
-          : (historyController.realmResultsQRDatabase?.length ?? 0) == 0
+          : historyController.scannedCode.isEmpty
               ? const Center(
                   child: Text(
                     "No scanned code found!",
@@ -274,7 +274,7 @@ class HistoryPageScanned extends StatelessWidget {
                   ),
                 )
               : ListView.builder(
-                  itemCount: historyController.realmResultsQRDatabase?.length ?? 0,
+                  itemCount: historyController.scannedCode.length,
                   padding: const EdgeInsets.all(15),
                   itemBuilder: (context, index) {
                     return Container(
@@ -296,7 +296,7 @@ class HistoryPageScanned extends StatelessWidget {
                               const SizedBox(width: 10),
                               Image.asset(
                                 ImagePaths.qRBarcodeImageInHistory(
-                                  historyController.realmResultsQRDatabase?[index].title,
+                                  historyController.scannedCode[index].title,
                                 ),
                                 height: 50,
                                 width: 50,
@@ -306,7 +306,7 @@ class HistoryPageScanned extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    historyController.realmResultsQRDatabase?[index].title ?? "",
+                                    historyController.scannedCode[index].title ?? "",
                                     style: const TextStyle(
                                       fontFamily: FontFamily.productSansBold,
                                       fontSize: 16,
@@ -316,7 +316,7 @@ class HistoryPageScanned extends StatelessWidget {
                                     height: 20,
                                     width: MediaQuery.of(context).size.width * 0.5,
                                     child: Text(
-                                      (historyController.realmResultsQRDatabase?[index].description ?? "").trim(),
+                                      (historyController.scannedCode[index].description ?? "").trim(),
                                       style: const TextStyle(
                                         fontFamily: FontFamily.productSansRegular,
                                         fontSize: 14,
@@ -334,7 +334,7 @@ class HistoryPageScanned extends StatelessWidget {
                               return [
                                 PopupMenuItem(
                                   onTap: () {
-                                    Share.share((historyController.realmResultsQRDatabase?[index].description ?? "").trim());
+                                    Share.share((historyController.scannedCode[index].description ?? "").trim());
                                   },
                                   padding: const EdgeInsets.only(left: 10, right: 15),
                                   child: Row(
@@ -358,7 +358,7 @@ class HistoryPageScanned extends StatelessWidget {
                                 ),
                                 PopupMenuItem(
                                   onTap: () async {
-                                    String content = (historyController.realmResultsQRDatabase?[index].description ?? "").trim();
+                                    String content = (historyController.scannedCode[index].description ?? "").trim();
                                     await Clipboard.setData(ClipboardData(text: content));
                                     if (context.mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(

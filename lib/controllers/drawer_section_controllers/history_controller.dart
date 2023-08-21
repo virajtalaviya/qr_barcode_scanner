@@ -15,6 +15,9 @@ class HistoryController extends GetxController {
   RealmResults<QRDatabase>? realmResultsQRDatabase;
   RealmResults<CreatedQRCode>? realmResultsCreatedQRCode;
 
+  List<QRDatabase> scannedCode = [];
+  List<CreatedQRCode> createdCode = [];
+
   void deleteScannedQRCode(int index) {
     DataBaseHelper.realm.write(() {
       DataBaseHelper.realm.delete<QRDatabase>(realmResultsQRDatabase![index]);
@@ -25,6 +28,7 @@ class HistoryController extends GetxController {
   void getScannedQR() {
     gotScannedData.value = false;
     realmResultsQRDatabase = DataBaseHelper.realm.all<QRDatabase>();
+    scannedCode = realmResultsQRDatabase?.toList().reversed.toList() ?? [];
     gotScannedData.value = true;
   }
 
@@ -38,6 +42,7 @@ class HistoryController extends GetxController {
   void getCreatedQRCode() {
     gotCreatedData.value = false;
     realmResultsCreatedQRCode = DataBaseHelper.realm.all<CreatedQRCode>();
+    createdCode = realmResultsCreatedQRCode?.toList().reversed.toList() ?? [];
     gotCreatedData.value = true;
   }
 
