@@ -3,7 +3,6 @@ package com.app.qrbarscanner;
 import com.google.android.gms.ads.nativead.MediaView;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-
 import java.util.Map;
-
 import io.flutter.plugins.googlemobileads.GoogleMobileAdsPlugin;
 
 class NativeAdFactorySmall implements GoogleMobileAdsPlugin.NativeAdFactory {
@@ -31,6 +28,7 @@ class NativeAdFactorySmall implements GoogleMobileAdsPlugin.NativeAdFactory {
                 .inflate(R.layout.small_template, null);
 
 
+
 //    attribution
 
         TextView attributionViewSmall = nativeAdView
@@ -45,7 +43,7 @@ class NativeAdFactorySmall implements GoogleMobileAdsPlugin.NativeAdFactory {
             nativeAdView.getIconView().setVisibility(View.GONE);
 
         } else {
-            ((ImageView) nativeAdView.getIconView()).setImageDrawable(nativeAd.getIcon().getDrawable());
+            ((ImageView)nativeAdView.getIconView()).setImageDrawable(nativeAd.getIcon().getDrawable());
 
         }
 
@@ -57,42 +55,44 @@ class NativeAdFactorySmall implements GoogleMobileAdsPlugin.NativeAdFactory {
 // button
 
         nativeAdView.setCallToActionView(nativeAdView.findViewById(R.id.native_ad_button));
-        if (nativeAd.getCallToAction() == null) {
+        if(nativeAd.getCallToAction()==null){
             nativeAdView.getCallToActionView().setVisibility(View.INVISIBLE);
-        } else {
-            ((Button) nativeAdView.getCallToActionView()).setText(nativeAd.getCallToAction());
+        }else{
+            ((Button)nativeAdView.getCallToActionView()).setText(nativeAd.getCallToAction());
         }
 
 //   headline
         nativeAdView.setHeadlineView(nativeAdView.findViewById(R.id.native_ad_headline));
-        ((TextView) nativeAdView.getHeadlineView()).setText(nativeAd.getHeadline());
+        ((TextView)nativeAdView.getHeadlineView()).setText(nativeAd.getHeadline());
 
 //  bodyView
         nativeAdView.setBodyView(nativeAdView.findViewById(R.id.native_ad_body));
-        if (nativeAd.getBody() == null) {
+        if(nativeAd.getBody()==null){
             nativeAdView.getBodyView().setVisibility(View.INVISIBLE);
-        } else {
-            ((TextView) nativeAdView.getBodyView()).setText(nativeAd.getBody());
+        }else {
+            ((TextView)nativeAdView.getBodyView()).setText(nativeAd.getBody());
             nativeAdView.getBodyView().setVisibility(View.VISIBLE);
         }
 
 //    advertiser name
         nativeAdView.setAdvertiserView(nativeAdView.findViewById(R.id.native_ad_advertiser));
-        if (nativeAd.getAdvertiser() == null) {
+        if(nativeAd.getAdvertiser()==null){
             nativeAdView.getAdvertiserView().setVisibility(View.GONE);
-        } else {
-            ((TextView) nativeAdView.getAdvertiserView()).setText(nativeAd.getAdvertiser());
+        }else {
+            ((TextView)nativeAdView.getAdvertiserView()).setText(nativeAd.getAdvertiser());
             nativeAdView.getAdvertiserView().setVisibility(View.VISIBLE);
         }
 //   ratingbar
         nativeAdView.setStarRatingView(nativeAdView.findViewById(R.id.native_ad_rating));
-        if (nativeAd.getStarRating() == null) {
+        if(nativeAd.getStarRating()==null){
             nativeAdView.getStarRatingView().setVisibility(View.INVISIBLE);
-        } else {
-            ((RatingBar) nativeAdView.getStarRatingView()).setRating(nativeAd.getStarRating().floatValue());
+        }else{
+            ((RatingBar)nativeAdView.getStarRatingView()).setRating(nativeAd.getStarRating().floatValue());
             nativeAdView.getStarRatingView().setVisibility(View.VISIBLE);
 
         }
+
+
 
 
         nativeAdView.setNativeAd(nativeAd);

@@ -12,37 +12,37 @@ class HistoryController extends GetxController {
   TextEditingController historySearchController = TextEditingController();
   RxBool gotScannedData = false.obs;
   RxBool gotCreatedData = false.obs;
-  RealmResults<QRDatabase>? realmResultsQRDatabase;
-  RealmResults<CreatedQRCode>? realmResultsCreatedQRCode;
+  RealmResults<ScannedCode>? realmResultsQRDatabase;
+  RealmResults<CreatedCode>? realmResultsCreatedQRCode;
 
-  List<QRDatabase> scannedCode = [];
-  List<CreatedQRCode> createdCode = [];
+  // List<QRDatabase> scannedCode = [];
+  // List<CreatedQRCode> createdCode = [];
 
   void deleteScannedQRCode(int index) {
     DataBaseHelper.realm.write(() {
-      DataBaseHelper.realm.delete<QRDatabase>(realmResultsQRDatabase![index]);
+      DataBaseHelper.realm.delete<ScannedCode>(realmResultsQRDatabase![index]);
     });
     getScannedQR();
   }
 
   void getScannedQR() {
     gotScannedData.value = false;
-    realmResultsQRDatabase = DataBaseHelper.realm.all<QRDatabase>();
-    scannedCode = realmResultsQRDatabase?.toList().reversed.toList() ?? [];
+    realmResultsQRDatabase = DataBaseHelper.realm.all<ScannedCode>();
+    // realmResultsQRDatabase = realmResultsQRDatabase?.toList().reversed as RealmResults<QRDatabase>?;
     gotScannedData.value = true;
   }
 
   void deleteCreatedQRCode(int index) {
     DataBaseHelper.realm.write(() {
-      DataBaseHelper.realm.delete<CreatedQRCode>(realmResultsCreatedQRCode![index]);
+      DataBaseHelper.realm.delete<CreatedCode>(realmResultsCreatedQRCode![index]);
     });
     getCreatedQRCode();
   }
 
   void getCreatedQRCode() {
     gotCreatedData.value = false;
-    realmResultsCreatedQRCode = DataBaseHelper.realm.all<CreatedQRCode>();
-    createdCode = realmResultsCreatedQRCode?.toList().reversed.toList() ?? [];
+    realmResultsCreatedQRCode = DataBaseHelper.realm.all<CreatedCode>();
+    // realmResultsCreatedQRCode = realmResultsCreatedQRCode?.toList().reversed as RealmResults<CreatedQRCode>?;
     gotCreatedData.value = true;
   }
 

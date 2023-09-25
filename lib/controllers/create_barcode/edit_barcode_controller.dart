@@ -117,8 +117,8 @@ class EditCreatedBarcodeController extends GetxController {
     String intListString = qrImage?.join(',') ?? "";
 
     DataBaseHelper.realm.write(() {
-      DataBaseHelper.realm.add<CreatedQRCode>(
-        CreatedQRCode(
+      DataBaseHelper.realm.add<CreatedCode>(
+        CreatedCode(
           title: title,
           content: content,
           bytes: intListString,
@@ -132,7 +132,7 @@ class EditCreatedBarcodeController extends GetxController {
     Get.to(
       () => SavedBarCode(
         qrImage: qrImage,
-        createdQRCode: CreatedQRCode(
+        createdCode: CreatedCode(
           title: title,
           content: content,
         ),

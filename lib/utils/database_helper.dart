@@ -3,7 +3,7 @@ import 'package:realm/realm.dart';
 part 'database_helper.g.dart';
 
 @RealmModel()
-class _QRDatabase {
+class _ScannedCode {
   String? imageType;
   String? title;
   String? description;
@@ -11,7 +11,7 @@ class _QRDatabase {
 
 
 @RealmModel()
-class _CreatedQRCode{
+class _CreatedCode{
   String? title;
   String? content;
   String? qrType;
@@ -19,7 +19,7 @@ class _CreatedQRCode{
 }
 
 class DataBaseHelper {
-  static Configuration config = Configuration.local([QRDatabase.schema,CreatedQRCode.schema]);
+  static Configuration config = Configuration.local([ScannedCode.schema,CreatedCode.schema]);
   static late Realm realm;
 
   static void initDatabase() {

@@ -6,9 +6,9 @@ part of 'database_helper.dart';
 // RealmObjectGenerator
 // **************************************************************************
 
-class QRDatabase extends _QRDatabase
+class ScannedCode extends _ScannedCode
     with RealmEntity, RealmObjectBase, RealmObject {
-  QRDatabase({
+  ScannedCode({
     String? imageType,
     String? title,
     String? description,
@@ -18,7 +18,7 @@ class QRDatabase extends _QRDatabase
     RealmObjectBase.set(this, 'description', description);
   }
 
-  QRDatabase._();
+  ScannedCode._();
 
   @override
   String? get imageType =>
@@ -39,18 +39,18 @@ class QRDatabase extends _QRDatabase
       RealmObjectBase.set(this, 'description', value);
 
   @override
-  Stream<RealmObjectChanges<QRDatabase>> get changes =>
-      RealmObjectBase.getChanges<QRDatabase>(this);
+  Stream<RealmObjectChanges<ScannedCode>> get changes =>
+      RealmObjectBase.getChanges<ScannedCode>(this);
 
   @override
-  QRDatabase freeze() => RealmObjectBase.freezeObject<QRDatabase>(this);
+  ScannedCode freeze() => RealmObjectBase.freezeObject<ScannedCode>(this);
 
   static SchemaObject get schema => _schema ??= _initSchema();
   static SchemaObject? _schema;
   static SchemaObject _initSchema() {
-    RealmObjectBase.registerFactory(QRDatabase._);
+    RealmObjectBase.registerFactory(ScannedCode._);
     return const SchemaObject(
-        ObjectType.realmObject, QRDatabase, 'QRDatabase', [
+        ObjectType.realmObject, ScannedCode, 'QRDatabase', [
       SchemaProperty('imageType', RealmPropertyType.string, optional: true),
       SchemaProperty('title', RealmPropertyType.string, optional: true),
       SchemaProperty('description', RealmPropertyType.string, optional: true),
@@ -58,9 +58,9 @@ class QRDatabase extends _QRDatabase
   }
 }
 
-class CreatedQRCode extends _CreatedQRCode
+class CreatedCode extends _CreatedCode
     with RealmEntity, RealmObjectBase, RealmObject {
-  CreatedQRCode({
+  CreatedCode({
     String? title,
     String? content,
     String? qrType,
@@ -72,7 +72,7 @@ class CreatedQRCode extends _CreatedQRCode
     RealmObjectBase.set(this, 'bytes', bytes);
   }
 
-  CreatedQRCode._();
+  CreatedCode._();
 
   @override
   String? get title => RealmObjectBase.get<String>(this, 'title') as String?;
@@ -96,18 +96,18 @@ class CreatedQRCode extends _CreatedQRCode
   set bytes(String? value) => RealmObjectBase.set(this, 'bytes', value);
 
   @override
-  Stream<RealmObjectChanges<CreatedQRCode>> get changes =>
-      RealmObjectBase.getChanges<CreatedQRCode>(this);
+  Stream<RealmObjectChanges<CreatedCode>> get changes =>
+      RealmObjectBase.getChanges<CreatedCode>(this);
 
   @override
-  CreatedQRCode freeze() => RealmObjectBase.freezeObject<CreatedQRCode>(this);
+  CreatedCode freeze() => RealmObjectBase.freezeObject<CreatedCode>(this);
 
   static SchemaObject get schema => _schema ??= _initSchema();
   static SchemaObject? _schema;
   static SchemaObject _initSchema() {
-    RealmObjectBase.registerFactory(CreatedQRCode._);
+    RealmObjectBase.registerFactory(CreatedCode._);
     return const SchemaObject(
-        ObjectType.realmObject, CreatedQRCode, 'CreatedQRCode', [
+        ObjectType.realmObject, CreatedCode, 'CreatedQRCode', [
       SchemaProperty('title', RealmPropertyType.string, optional: true),
       SchemaProperty('content', RealmPropertyType.string, optional: true),
       SchemaProperty('qrType', RealmPropertyType.string, optional: true),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -48,20 +50,22 @@ class CreateQRController extends GetxController {
   RxBool nativeAdLoaded = false.obs;
 
   void loadNativeAD() {
+    print("=====   LOAD NATIVE CALLED   ========================");
+    log("=====   LOAD NATIVE CALLED   ========================");
     nativeAd = NativeAd(
       adUnitId: "ca-app-pub-3940256099942544/2247696110",
       factoryId: 'listTile',
       listener: NativeAdListener(
-        onAdImpression: (ad) {
-
-        },
+        onAdImpression: (ad) {},
         onAdClicked: (ad) {},
         onAdFailedToLoad: (ad, error) {
           print("=====================   native ad failed to load===========================================");
+          log("=====================   native ad failed to load===========================================");
         },
         onAdClosed: (ad) {},
         onAdLoaded: (ad) {
           print("=====================  loaded  ===========================================");
+          log("=====================  loaded  ===========================================");
           nativeAdLoaded.value = true;
         },
         onAdOpened: (ad) {},
@@ -69,35 +73,6 @@ class CreateQRController extends GetxController {
         onPaidEvent: (ad, valueMicros, precision, currencyCode) {},
       ),
       request: const AdRequest(),
-      // nativeTemplateStyle: NativeTemplateStyle(
-      //   templateType: TemplateType.small,
-      //   mainBackgroundColor: Colors.purple,
-      //   cornerRadius: 10.0,
-      //   callToActionTextStyle: NativeTemplateTextStyle(
-      //     textColor: Colors.cyan,
-      //     backgroundColor: Colors.red,
-      //     style: NativeTemplateFontStyle.monospace,
-      //     size: 16.0,
-      //   ),
-      //   primaryTextStyle: NativeTemplateTextStyle(
-      //     textColor: Colors.red,
-      //     backgroundColor: Colors.cyan,
-      //     style: NativeTemplateFontStyle.italic,
-      //     size: 16.0,
-      //   ),
-      //   secondaryTextStyle: NativeTemplateTextStyle(
-      //     textColor: Colors.green,
-      //     backgroundColor: Colors.black,
-      //     style: NativeTemplateFontStyle.bold,
-      //     size: 16.0,
-      //   ),
-      //   tertiaryTextStyle: NativeTemplateTextStyle(
-      //     textColor: Colors.brown,
-      //     backgroundColor: Colors.amber,
-      //     style: NativeTemplateFontStyle.normal,
-      //     size: 16.0,
-      //   ),
-      // ),
     );
     nativeAd.load();
   }

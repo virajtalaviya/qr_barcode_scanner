@@ -14,11 +14,11 @@ import 'package:share_plus/share_plus.dart';
 class QrPreviewScreenForCreated extends StatelessWidget {
   const QrPreviewScreenForCreated({
     Key? key,
-    required this.createdQRCode,
+    required this.createdCode,
     required this.qrImage,
   }) : super(key: key);
 
-  final CreatedQRCode createdQRCode;
+  final CreatedCode createdCode;
   final Uint8List qrImage;
 
   void shareQRImage() async {
@@ -115,7 +115,7 @@ class QrPreviewScreenForCreated extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      "${createdQRCode.content}",
+                      "${createdCode.content}",
                       style: const TextStyle(
                         fontSize: 16,
                         fontFamily: FontFamily.productSansRegular,
@@ -142,7 +142,7 @@ class QrPreviewScreenForCreated extends StatelessWidget {
                       imagePath: ImagePaths.elevatedButtonDelete,
                       onTap: () {
                         DataBaseHelper.realm.write(() {
-                          DataBaseHelper.realm.delete<CreatedQRCode>(createdQRCode);
+                          DataBaseHelper.realm.delete<CreatedCode>(createdCode);
                         });
                         Get.back(result: "getData");
                       },

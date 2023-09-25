@@ -14,7 +14,7 @@ class ScanResultController extends GetxController {
       for (int i = 0; i < barcode.barcodes.length; i++) {
         DataBaseHelper.realm.write(() {
           DataBaseHelper.realm.add(
-            QRDatabase(
+            ScannedCode(
               imageType: barcode.image == null ? "text" : "image",
               title: getBarcodeType(i),
               description: currentContent(i),

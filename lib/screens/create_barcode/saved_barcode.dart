@@ -17,12 +17,12 @@ class SavedBarCode extends StatelessWidget {
   const SavedBarCode({
     Key? key,
     required this.qrImage,
-    required this.createdQRCode,
+    required this.createdCode,
     required this.codeType,
   }) : super(key: key);
 
   final Uint8List? qrImage;
-  final CreatedQRCode createdQRCode;
+  final CreatedCode createdCode;
   final String codeType;
 
   @override
@@ -143,7 +143,7 @@ class SavedBarCode extends StatelessWidget {
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            "${createdQRCode.content}",
+                            "${createdCode.content}",
                             style: const TextStyle(
                               fontSize: 16,
                               fontFamily: FontFamily.productSansRegular,
@@ -179,7 +179,7 @@ class SavedBarCode extends StatelessWidget {
                             onTap: () {
                               DataBaseHelper.realm.write(() {
                                 DataBaseHelper.realm
-                                    .delete<CreatedQRCode>(DataBaseHelper.realm.all<CreatedQRCode>().last);
+                                    .delete<CreatedCode>(DataBaseHelper.realm.all<CreatedCode>().last);
                               });
                               Get.close(3);
                               showSnackBar(context, "Barcode deleted");
