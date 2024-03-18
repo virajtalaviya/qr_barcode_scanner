@@ -8,6 +8,9 @@ import 'package:realm/realm.dart';
 import 'package:share_plus/share_plus.dart';
 
 class HistoryController extends GetxController {
+  RxBool isSearching = false.obs;
+  int currentIndex = 0;
+
   RxBool showTextField = false.obs;
   TextEditingController historySearchController = TextEditingController();
   RxBool gotScannedData = false.obs;
@@ -15,34 +18,104 @@ class HistoryController extends GetxController {
   RealmResults<ScannedCode>? realmResultsQRDatabase;
   RealmResults<CreatedCode>? realmResultsCreatedQRCode;
 
+  List<ScannedCode>? realmResultsQRDatabaseToShow;
+  List<CreatedCode>? realmResultsCreatedQRCodeToShow;
+
+  List<ScannedCode>? realmResultsQRDatabaseToShowInSearching;
+  List<CreatedCode>? realmResultsCreatedQRCodeToShowShowInSearching;
+
   // List<QRDatabase> scannedCode = [];
   // List<CreatedQRCode> createdCode = [];
 
+  bool checkIfItContainsOrNotInCreated(String text, int i) {
+    if (realmResultsCreatedQRCodeToShow?[i].content?.contains(text) ?? false) {
+      return true;
+    } else if (realmResultsCreatedQRCodeToShow?[i].title?.contains(text) ?? false) {
+      return true;
+    }
+    return false;
+  }
+
+  bool checkIfItContainsOrNotInScanned(String text, int i) {
+    if (realmResultsQRDatabaseToShow?[i].description?.contains(text) ?? false) {
+      return true;
+    } else if (realmResultsQRDatabaseToShow?[i].title?.contains(text) ?? false) {
+      return true;
+    }
+    return false;
+  }
+
+  void searchProcedure(String textValue) {
+    print("-----$textValue");
+    if (currentIndex == 0) {
+      realmResultsCreatedQRCodeToShowShowInSearching = [];
+      for (int i = 0; i < (realmResultsCreatedQRCodeToShow?.length ?? 0); i++) {
+        if (checkIfItContainsOrNotInCreated(textValue, i)) {
+          realmResultsCreatedQRCodeToShowShowInSearching?.add(
+            CreatedCode(
+              qrType: realmResultsCreatedQRCodeToShow?[i].qrType,
+              bytes: realmResultsCreatedQRCodeToShow?[i].bytes,
+              content: realmResultsCreatedQRCodeToShow?[i].content,
+              title: realmResultsCreatedQRCodeToShow?[i].title,
+            ),
+          );
+        }
+      }
+    } else {
+      realmResultsQRDatabaseToShow = [];
+      for (int i = 0; i < (realmResultsQRDatabaseToShow?.length ?? 0); i++) {
+        if (checkIfItContainsOrNotInScanned(textValue, i)) {
+          realmResultsQRDatabaseToShowInSearching?.add(
+            ScannedCode(
+              title: realmResultsQRDatabaseToShow?[i].title,
+              description: realmResultsQRDatabaseToShow?[i].description,
+              imageType: realmResultsQRDatabaseToShow?[i].imageType,
+            ),
+          );
+        }
+      }
+    }
+    update();
+  }
+
   void deleteScannedQRCode(int index) {
-    DataBaseHelper.realm.write(() {
-      DataBaseHelper.realm.delete<ScannedCode>(realmResultsQRDatabase![index]);
-    });
+    if (isSearching.value) {
+      DataBaseHelper.realm.write(() {
+        DataBaseHelper.realm.delete<ScannedCode>(realmResultsQRDatabaseToShowInSearching![index]);
+      });
+    } else {
+      DataBaseHelper.realm.write(() {
+        DataBaseHelper.realm.delete<ScannedCode>(realmResultsQRDatabaseToShow![index]);
+      });
+    }
     getScannedQR();
   }
 
   void getScannedQR() {
     gotScannedData.value = false;
     realmResultsQRDatabase = DataBaseHelper.realm.all<ScannedCode>();
-    // realmResultsQRDatabase = realmResultsQRDatabase?.toList().reversed as RealmResults<QRDatabase>?;
+    realmResultsQRDatabaseToShow = realmResultsQRDatabase?.toList().reversed.toList();
     gotScannedData.value = true;
   }
 
   void deleteCreatedQRCode(int index) {
-    DataBaseHelper.realm.write(() {
-      DataBaseHelper.realm.delete<CreatedCode>(realmResultsCreatedQRCode![index]);
-    });
+    if (isSearching.value) {
+      DataBaseHelper.realm.write(() {
+        DataBaseHelper.realm.delete<CreatedCode>(realmResultsCreatedQRCodeToShowShowInSearching![index]);
+      });
+    } else {
+      DataBaseHelper.realm.write(() {
+        DataBaseHelper.realm.delete<CreatedCode>(realmResultsCreatedQRCodeToShow![index]);
+      });
+    }
+
     getCreatedQRCode();
   }
 
   void getCreatedQRCode() {
     gotCreatedData.value = false;
     realmResultsCreatedQRCode = DataBaseHelper.realm.all<CreatedCode>();
-    // realmResultsCreatedQRCode = realmResultsCreatedQRCode?.toList().reversed as RealmResults<CreatedQRCode>?;
+    realmResultsCreatedQRCodeToShow = realmResultsCreatedQRCode?.toList().reversed.toList();
     gotCreatedData.value = true;
   }
 

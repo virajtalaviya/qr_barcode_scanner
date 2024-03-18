@@ -165,8 +165,7 @@ class CreateQRScreen extends StatelessWidget {
               ),
               Obx(() {
                 print("[][][][][][][]${createQRController.nativeAdLoaded.value}");
-                log("[][][][][][][]${createQRController.nativeAdLoaded.value}");
-                return Container(
+                return SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: 270,//MediaQuery.of(context).size.height * 0.25,
                   child: createQRController.nativeAdLoaded.value

@@ -44,6 +44,9 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
               borderRadius: BorderRadius.circular(6),
             ),
             child: TabBar(
+              onTap: (value) {
+                widget.historyController.currentIndex = value;
+              },
               controller: tabController,
               automaticIndicatorColorAdjustment: false,
               enableFeedback: true,
@@ -105,7 +108,7 @@ class HistoryPageCreated extends StatelessWidget {
     return Obx(() {
       return historyController.gotCreatedData.value == false
           ? const Center(child: CircularProgressIndicator())
-          : historyController.realmResultsCreatedQRCode?.isEmpty ?? true
+          : historyController.realmResultsCreatedQRCodeToShow?.isEmpty ?? true
               ? const Center(
                   child: Text(
                     "No created code found!",
@@ -116,138 +119,293 @@ class HistoryPageCreated extends StatelessWidget {
                     ),
                   ),
                 )
-              : ListView.builder(
-                  itemCount: historyController.realmResultsCreatedQRCode?.length ?? 0,
-                  padding: const EdgeInsets.all(15),
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      padding: const EdgeInsets.only(top: 10, bottom: 10),
-                      decoration: BoxDecoration(
-                        color: ColorUtils.autoCopyThumbSurfaceColor,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: ColorUtils.tbBGBorderColor,
-                        ),
-                      ),
-                      child: GestureDetector(
-                        onTap: () async {
-                          List<int> imageBytes = historyController.realmResultsCreatedQRCode?[index].bytes?.split(',').map(int.parse).toList() ?? [];
-                          Uint8List qrImageData = Uint8List.fromList(imageBytes);
-                          final result = await Get.to(
-                            () => QrPreviewScreenForCreated(
-                              createdCode: historyController.realmResultsCreatedQRCode![index],
-                              qrImage: qrImageData,
+              : Obx(() {
+                  if (historyController.isSearching.value) {
+                    return GetBuilder<HistoryController>(builder: (controller) {
+                      return ListView.builder(
+                        itemCount: historyController.realmResultsCreatedQRCodeToShowShowInSearching?.length ?? 0,
+                        padding: const EdgeInsets.all(15),
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.only(top: 10, bottom: 10),
+                            decoration: BoxDecoration(
+                              color: ColorUtils.autoCopyThumbSurfaceColor,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: ColorUtils.tbBGBorderColor,
+                              ),
+                            ),
+                            child: GestureDetector(
+                              onTap: () async {
+                                List<int> imageBytes = historyController
+                                        .realmResultsCreatedQRCodeToShowShowInSearching?[index].bytes
+                                        ?.split(',')
+                                        .map(int.parse)
+                                        .toList() ??
+                                    [];
+                                Uint8List qrImageData = Uint8List.fromList(imageBytes);
+                                final result = await Get.to(
+                                  () => QrPreviewScreenForCreated(
+                                    createdCode:
+                                        historyController.realmResultsCreatedQRCodeToShowShowInSearching![index],
+                                    qrImage: qrImageData,
+                                  ),
+                                );
+                                if (result == "getData") {
+                                  historyController.getCreatedQRCode();
+                                }
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const SizedBox(width: 10),
+                                      Image.asset(
+                                        ImagePaths.qRBarcodeImageInHistory(
+                                          historyController
+                                              .realmResultsCreatedQRCodeToShowShowInSearching![index].title,
+                                        ),
+                                        height: 50,
+                                        width: 50,
+                                      ),
+                                      const SizedBox(width: 20),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            historyController
+                                                    .realmResultsCreatedQRCodeToShowShowInSearching![index].title ??
+                                                "",
+                                            style: const TextStyle(
+                                              fontFamily: FontFamily.productSansBold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                            width: MediaQuery.of(context).size.width * 0.5,
+                                            child: Text(
+                                              historyController
+                                                      .realmResultsCreatedQRCodeToShowShowInSearching![index].content ??
+                                                  "",
+                                              style: const TextStyle(
+                                                fontFamily: FontFamily.productSansRegular,
+                                                fontSize: 14,
+                                              ),
+                                              overflow: TextOverflow.fade,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  PopupMenuButton(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    itemBuilder: (context) {
+                                      return [
+                                        PopupMenuItem(
+                                          onTap: () {
+                                            historyController.shareQRImage(
+                                              historyController
+                                                      .realmResultsCreatedQRCodeToShowShowInSearching![index].bytes ??
+                                                  "",
+                                            );
+                                          },
+                                          padding: const EdgeInsets.only(left: 10, right: 15),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Image.asset(
+                                                ImagePaths.share,
+                                                width: 25,
+                                                height: 25,
+                                              ),
+                                              const SizedBox(width: 10),
+                                              const Text(
+                                                "Share",
+                                                style: TextStyle(
+                                                  fontFamily: FontFamily.productSansRegular,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        PopupMenuItem(
+                                          onTap: () {
+                                            historyController.deleteCreatedQRCode(index);
+                                          },
+                                          padding: const EdgeInsets.only(left: 10, right: 15),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Image.asset(
+                                                ImagePaths.delete,
+                                                width: 25,
+                                                height: 25,
+                                              ),
+                                              const SizedBox(width: 10),
+                                              const Text(
+                                                "Delete",
+                                                style: TextStyle(
+                                                  fontFamily: FontFamily.productSansRegular,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ];
+                                    },
+                                  )
+                                ],
+                              ),
                             ),
                           );
-                          if (result == "getData") {
-                            historyController.getCreatedQRCode();
-                          }
                         },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const SizedBox(width: 10),
-                                Image.asset(
-                                  ImagePaths.qRBarcodeImageInHistory(
-                                    historyController.realmResultsCreatedQRCode![index].title,
-                                  ),
-                                  height: 50,
-                                  width: 50,
-                                ),
-                                const SizedBox(width: 20),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      historyController.realmResultsCreatedQRCode![index].title ?? "",
-                                      style: const TextStyle(
-                                        fontFamily: FontFamily.productSansBold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                      width: MediaQuery.of(context).size.width * 0.5,
-                                      child: Text(
-                                        historyController.realmResultsCreatedQRCode![index].content ?? "",
-                                        style: const TextStyle(
-                                          fontFamily: FontFamily.productSansRegular,
-                                          fontSize: 14,
-                                        ),
-                                        overflow: TextOverflow.fade,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                            PopupMenuButton(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                              itemBuilder: (context) {
-                                return [
-                                  PopupMenuItem(
-                                    onTap: () {
-                                      historyController.shareQRImage(
-                                        historyController.realmResultsCreatedQRCode![index].bytes ?? "",
-                                      );
-                                    },
-                                    padding: const EdgeInsets.only(left: 10, right: 15),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Image.asset(
-                                          ImagePaths.share,
-                                          width: 25,
-                                          height: 25,
-                                        ),
-                                        const SizedBox(width: 10),
-                                        const Text(
-                                          "Share",
-                                          style: TextStyle(
-                                            fontFamily: FontFamily.productSansRegular,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    onTap: () {
-                                      historyController.deleteCreatedQRCode(index);
-                                    },
-                                    padding: const EdgeInsets.only(left: 10, right: 15),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Image.asset(
-                                          ImagePaths.delete,
-                                          width: 25,
-                                          height: 25,
-                                        ),
-                                        const SizedBox(width: 10),
-                                        const Text(
-                                          "Delete",
-                                          style: TextStyle(
-                                            fontFamily: FontFamily.productSansRegular,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ];
-                              },
-                            )
-                          ],
+                      );
+                    });
+                  }
+                  return ListView.builder(
+                    itemCount: historyController.realmResultsCreatedQRCodeToShow?.length ?? 0,
+                    padding: const EdgeInsets.all(15),
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.only(top: 10, bottom: 10),
+                        decoration: BoxDecoration(
+                          color: ColorUtils.autoCopyThumbSurfaceColor,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: ColorUtils.tbBGBorderColor,
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                );
+                        child: GestureDetector(
+                          onTap: () async {
+                            List<int> imageBytes = historyController.realmResultsCreatedQRCodeToShow?[index].bytes
+                                    ?.split(',')
+                                    .map(int.parse)
+                                    .toList() ??
+                                [];
+                            Uint8List qrImageData = Uint8List.fromList(imageBytes);
+                            final result = await Get.to(
+                              () => QrPreviewScreenForCreated(
+                                createdCode: historyController.realmResultsCreatedQRCodeToShow![index],
+                                qrImage: qrImageData,
+                              ),
+                            );
+                            if (result == "getData") {
+                              historyController.getCreatedQRCode();
+                            }
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const SizedBox(width: 10),
+                                  Image.asset(
+                                    ImagePaths.qRBarcodeImageInHistory(
+                                      historyController.realmResultsCreatedQRCodeToShow![index].title,
+                                    ),
+                                    height: 50,
+                                    width: 50,
+                                  ),
+                                  const SizedBox(width: 20),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        historyController.realmResultsCreatedQRCodeToShow![index].title ?? "",
+                                        style: const TextStyle(
+                                          fontFamily: FontFamily.productSansBold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                        width: MediaQuery.of(context).size.width * 0.5,
+                                        child: Text(
+                                          historyController.realmResultsCreatedQRCodeToShow![index].content ?? "",
+                                          style: const TextStyle(
+                                            fontFamily: FontFamily.productSansRegular,
+                                            fontSize: 14,
+                                          ),
+                                          overflow: TextOverflow.fade,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                              PopupMenuButton(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                itemBuilder: (context) {
+                                  return [
+                                    PopupMenuItem(
+                                      onTap: () {
+                                        historyController.shareQRImage(
+                                          historyController.realmResultsCreatedQRCodeToShow![index].bytes ?? "",
+                                        );
+                                      },
+                                      padding: const EdgeInsets.only(left: 10, right: 15),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Image.asset(
+                                            ImagePaths.share,
+                                            width: 25,
+                                            height: 25,
+                                          ),
+                                          const SizedBox(width: 10),
+                                          const Text(
+                                            "Share",
+                                            style: TextStyle(
+                                              fontFamily: FontFamily.productSansRegular,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    PopupMenuItem(
+                                      onTap: () {
+                                        historyController.deleteCreatedQRCode(index);
+                                      },
+                                      padding: const EdgeInsets.only(left: 10, right: 15),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Image.asset(
+                                            ImagePaths.delete,
+                                            width: 25,
+                                            height: 25,
+                                          ),
+                                          const SizedBox(width: 10),
+                                          const Text(
+                                            "Delete",
+                                            style: TextStyle(
+                                              fontFamily: FontFamily.productSansRegular,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ];
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                });
     });
   }
 }
@@ -262,7 +420,7 @@ class HistoryPageScanned extends StatelessWidget {
     return Obx(() {
       return historyController.gotScannedData.value == false
           ? const Center(child: CircularProgressIndicator())
-          : (historyController.realmResultsQRDatabase?.isEmpty ?? true)
+          : (historyController.realmResultsQRDatabaseToShow?.isEmpty ?? true)
               ? const Center(
                   child: Text(
                     "No scanned code found!",
@@ -273,153 +431,320 @@ class HistoryPageScanned extends StatelessWidget {
                     ),
                   ),
                 )
-              : ListView.builder(
-                  itemCount: historyController.realmResultsQRDatabase?.length ?? 0,
-                  padding: const EdgeInsets.all(15),
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      padding: const EdgeInsets.only(top: 10, bottom: 10),
-                      decoration: BoxDecoration(
-                        color: ColorUtils.autoCopyThumbSurfaceColor,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: ColorUtils.tbBGBorderColor,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const SizedBox(width: 10),
-                              Image.asset(
-                                ImagePaths.qRBarcodeImageInHistory(
-                                  historyController.realmResultsQRDatabase?[index].title,
+              : Obx(
+                  () {
+                    if (historyController.isSearching.value) {
+                      return GetBuilder(
+                        builder: (controller) {
+                          return ListView.builder(
+                            itemCount: historyController.realmResultsQRDatabaseToShowInSearching?.length ?? 0,
+                            padding: const EdgeInsets.all(15),
+                            itemBuilder: (context, index) {
+                              return Container(
+                                margin: const EdgeInsets.only(bottom: 10),
+                                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                                decoration: BoxDecoration(
+                                  color: ColorUtils.autoCopyThumbSurfaceColor,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: ColorUtils.tbBGBorderColor,
+                                  ),
                                 ),
-                                height: 50,
-                                width: 50,
-                              ),
-                              const SizedBox(width: 20),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const SizedBox(width: 10),
+                                        Image.asset(
+                                          ImagePaths.qRBarcodeImageInHistory(
+                                            historyController.realmResultsQRDatabaseToShowInSearching?[index].title,
+                                          ),
+                                          height: 50,
+                                          width: 50,
+                                        ),
+                                        const SizedBox(width: 20),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              historyController.realmResultsQRDatabaseToShowInSearching?[index].title ??
+                                                  "",
+                                              style: const TextStyle(
+                                                fontFamily: FontFamily.productSansBold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 20,
+                                              width: MediaQuery.of(context).size.width * 0.5,
+                                              child: Text(
+                                                (historyController.realmResultsQRDatabaseToShowInSearching?[index]
+                                                            .description ??
+                                                        "")
+                                                    .trim(),
+                                                style: const TextStyle(
+                                                  fontFamily: FontFamily.productSansRegular,
+                                                  fontSize: 14,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                    PopupMenuButton(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                      itemBuilder: (context) {
+                                        return [
+                                          PopupMenuItem(
+                                            onTap: () {
+                                              Share.share((historyController
+                                                          .realmResultsQRDatabaseToShowInSearching?[index]
+                                                          .description ??
+                                                      "")
+                                                  .trim());
+                                            },
+                                            padding: const EdgeInsets.only(left: 10, right: 15),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Image.asset(
+                                                  ImagePaths.share,
+                                                  width: 25,
+                                                  height: 25,
+                                                ),
+                                                const SizedBox(width: 10),
+                                                const Text(
+                                                  "Share",
+                                                  style: TextStyle(
+                                                    fontFamily: FontFamily.productSansRegular,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          PopupMenuItem(
+                                            onTap: () async {
+                                              String content = (historyController
+                                                          .realmResultsQRDatabaseToShowInSearching?[index]
+                                                          .description ??
+                                                      "")
+                                                  .trim();
+                                              await Clipboard.setData(ClipboardData(text: content));
+                                              if (context.mounted) {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text("Text copied successfully"),
+                                                    behavior: SnackBarBehavior.floating,
+                                                    margin: EdgeInsets.all(10),
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                            padding: const EdgeInsets.only(left: 10, right: 15),
+                                            child: const Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(Icons.copy),
+                                                SizedBox(width: 10),
+                                                Text(
+                                                  "Copy",
+                                                  style: TextStyle(
+                                                    fontFamily: FontFamily.productSansRegular,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          PopupMenuItem(
+                                            onTap: () {
+                                              historyController.deleteScannedQRCode(index);
+                                            },
+                                            padding: const EdgeInsets.only(left: 10, right: 15),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Image.asset(
+                                                  ImagePaths.delete,
+                                                  width: 25,
+                                                  height: 25,
+                                                ),
+                                                const SizedBox(width: 10),
+                                                const Text(
+                                                  "Delete",
+                                                  style: TextStyle(
+                                                    fontFamily: FontFamily.productSansRegular,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ];
+                                      },
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      );
+                    }
+                    return ListView.builder(
+                      itemCount: historyController.realmResultsQRDatabaseToShow?.length ?? 0,
+                      padding: const EdgeInsets.all(15),
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.only(top: 10, bottom: 10),
+                          decoration: BoxDecoration(
+                            color: ColorUtils.autoCopyThumbSurfaceColor,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: ColorUtils.tbBGBorderColor,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text(
-                                    historyController.realmResultsQRDatabase?[index].title ?? "",
-                                    style: const TextStyle(
-                                      fontFamily: FontFamily.productSansBold,
-                                      fontSize: 16,
+                                  const SizedBox(width: 10),
+                                  Image.asset(
+                                    ImagePaths.qRBarcodeImageInHistory(
+                                      historyController.realmResultsQRDatabaseToShow?[index].title,
                                     ),
+                                    height: 50,
+                                    width: 50,
                                   ),
-                                  SizedBox(
-                                    height: 20,
-                                    width: MediaQuery.of(context).size.width * 0.5,
-                                    child: Text(
-                                      (historyController.realmResultsQRDatabase?[index].description ?? "").trim(),
-                                      style: const TextStyle(
-                                        fontFamily: FontFamily.productSansRegular,
-                                        fontSize: 14,
+                                  const SizedBox(width: 20),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        historyController.realmResultsQRDatabaseToShow?[index].title ?? "",
+                                        style: const TextStyle(
+                                          fontFamily: FontFamily.productSansBold,
+                                          fontSize: 16,
+                                        ),
                                       ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
+                                      SizedBox(
+                                        height: 20,
+                                        width: MediaQuery.of(context).size.width * 0.5,
+                                        child: Text(
+                                          (historyController.realmResultsQRDatabaseToShow?[index].description ?? "")
+                                              .trim(),
+                                          style: const TextStyle(
+                                            fontFamily: FontFamily.productSansRegular,
+                                            fontSize: 14,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  )
                                 ],
+                              ),
+                              PopupMenuButton(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                itemBuilder: (context) {
+                                  return [
+                                    PopupMenuItem(
+                                      onTap: () {
+                                        Share.share(
+                                            (historyController.realmResultsQRDatabaseToShow?[index].description ?? "")
+                                                .trim());
+                                      },
+                                      padding: const EdgeInsets.only(left: 10, right: 15),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Image.asset(
+                                            ImagePaths.share,
+                                            width: 25,
+                                            height: 25,
+                                          ),
+                                          const SizedBox(width: 10),
+                                          const Text(
+                                            "Share",
+                                            style: TextStyle(
+                                              fontFamily: FontFamily.productSansRegular,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    PopupMenuItem(
+                                      onTap: () async {
+                                        String content =
+                                            (historyController.realmResultsQRDatabaseToShow?[index].description ?? "")
+                                                .trim();
+                                        await Clipboard.setData(ClipboardData(text: content));
+                                        if (context.mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text("Text copied successfully"),
+                                              behavior: SnackBarBehavior.floating,
+                                              margin: EdgeInsets.all(10),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      padding: const EdgeInsets.only(left: 10, right: 15),
+                                      child: const Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.copy),
+                                          SizedBox(width: 10),
+                                          Text(
+                                            "Copy",
+                                            style: TextStyle(
+                                              fontFamily: FontFamily.productSansRegular,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    PopupMenuItem(
+                                      onTap: () {
+                                        historyController.deleteScannedQRCode(index);
+                                      },
+                                      padding: const EdgeInsets.only(left: 10, right: 15),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Image.asset(
+                                            ImagePaths.delete,
+                                            width: 25,
+                                            height: 25,
+                                          ),
+                                          const SizedBox(width: 10),
+                                          const Text(
+                                            "Delete",
+                                            style: TextStyle(
+                                              fontFamily: FontFamily.productSansRegular,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ];
+                                },
                               )
                             ],
                           ),
-                          PopupMenuButton(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                            itemBuilder: (context) {
-                              return [
-                                PopupMenuItem(
-                                  onTap: () {
-                                    Share.share((historyController.realmResultsQRDatabase?[index].description ?? "").trim());
-                                  },
-                                  padding: const EdgeInsets.only(left: 10, right: 15),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Image.asset(
-                                        ImagePaths.share,
-                                        width: 25,
-                                        height: 25,
-                                      ),
-                                      const SizedBox(width: 10),
-                                      const Text(
-                                        "Share",
-                                        style: TextStyle(
-                                          fontFamily: FontFamily.productSansRegular,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                PopupMenuItem(
-                                  onTap: () async {
-                                    String content = (historyController.realmResultsQRDatabase?[index].description ?? "").trim();
-                                    await Clipboard.setData(ClipboardData(text: content));
-                                    if (context.mounted) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                          content: Text("Text copied successfully"),
-                                          behavior: SnackBarBehavior.floating,
-                                          margin: EdgeInsets.all(10),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  padding: const EdgeInsets.only(left: 10, right: 15),
-                                  child: const Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      // Image.asset(
-                                      //   ImagePaths.delete,
-                                      //   width: 25,
-                                      //   height: 25,
-                                      // ),
-                                      Icon(Icons.copy),
-                                      SizedBox(width: 10),
-                                      Text(
-                                        "Copy",
-                                        style: TextStyle(
-                                          fontFamily: FontFamily.productSansRegular,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                PopupMenuItem(
-                                  onTap: () {
-                                    historyController.deleteScannedQRCode(index);
-                                  },
-                                  padding: const EdgeInsets.only(left: 10, right: 15),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Image.asset(
-                                        ImagePaths.delete,
-                                        width: 25,
-                                        height: 25,
-                                      ),
-                                      const SizedBox(width: 10),
-                                      const Text(
-                                        "Delete",
-                                        style: TextStyle(
-                                          fontFamily: FontFamily.productSansRegular,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ];
-                            },
-                          )
-                        ],
-                      ),
+                        );
+                      },
                     );
                   },
                 );

@@ -107,6 +107,8 @@ class MainBGController extends GetxController {
         update();
         break;
       case 1:
+        historyController.getScannedQR();
+        historyController.getCreatedQRCode();
         currentWidget = History(historyController: historyController);
         currentAppBar = HistoryAppBar(scaffoldKey: scaffoldKey, historyController: historyController);
         update();

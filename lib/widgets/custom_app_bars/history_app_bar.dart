@@ -37,6 +37,14 @@ class HistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
             style: const TextStyle(
               fontFamily: FontFamily.productSansRegular,
             ),
+            onChanged: (value) {
+              if (value.isEmpty) {
+                historyController.isSearching.value = false;
+              } else {
+                historyController.isSearching.value = true;
+                historyController.searchProcedure(value);
+              }
+            },
             decoration: const InputDecoration(
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: ColorUtils.activeColor, width: 2),
@@ -60,31 +68,38 @@ class HistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
           );
         }
       }),
-      // actions: [
-      //   Obx(
-      //     () {
-      //       return historyController.showTextField.value == false
-      //           ? IconButton(
-      //               onPressed: () {
-      //                 historyController.showTextField.value = !historyController.showTextField.value;
-      //               },
-      //               icon: Image.asset(
-      //                 ImagePaths.searchIcon,
-      //                 height: 25,
-      //                 width: 25,
-      //               ),
-      //             )
-      //           : IconButton(
-      //               onPressed: () {
-      //                 historyController.showTextField.value = !historyController.showTextField.value;
-      //               },
-      //               icon: Image.asset(
-      //                 ImagePaths.closeIcon,
-      //               ),
-      //             );
-      //     },
-      //   ),
-      // ],
+      actions: [
+        Obx(
+          () {
+            return historyController.showTextField.value == false
+                ? IconButton(
+                    onPressed: () {
+                      historyController.showTextField.value = !historyController.showTextField.value;
+                    },
+                    // icon: Image.asset(
+                    //   ImagePaths.searchIcon,
+                    //   height: 25,
+                    //   width: 25,
+                    // ),
+                    icon: const Icon(
+                      Icons.search_sharp,
+                    ),
+                  )
+                : IconButton(
+                    onPressed: () {
+                      historyController.showTextField.value = !historyController.showTextField.value;
+                      historyController.isSearching.value = false;
+                    },
+                    // icon: Image.asset(
+                    //   ImagePaths.closeIcon,
+                    // ),
+                    icon: const Icon(
+                      Icons.close,
+                    ),
+                  );
+          },
+        ),
+      ],
       backgroundColor: Colors.white,
       elevation: 0,
     );
