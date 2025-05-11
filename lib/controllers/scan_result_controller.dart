@@ -128,8 +128,8 @@ class ScanResultController extends GetxController {
     name =
         "Name : ${contactInfo?.name?.prefix ?? ""} ${contactInfo?.name?.first ?? ""} ${contactInfo?.name?.middle ?? ""} ${contactInfo?.name?.last ?? ""} ${contactInfo?.name?.suffix ?? ""}\n";
 
-    if (contactInfo?.phones?.isNotEmpty ?? false) {
-      phone = "Phone : ${contactInfo?.phones?[0].number ?? ""}";
+    if (contactInfo?.phones.isNotEmpty ?? false) {
+      phone = "Phone : ${contactInfo?.phones[0].number ?? ""}";
     }
 
     return "$name\n$phone";
@@ -185,7 +185,7 @@ class ScanResultController extends GetxController {
 
   String giveWifi(WiFi? wifi) {
     String type = "";
-    switch (wifi?.encryptionType ?? EncryptionType.none) {
+    switch (wifi?.encryptionType) {
       case EncryptionType.open:
         type = "Encryption type : Open";
         break;
@@ -195,7 +195,7 @@ class ScanResultController extends GetxController {
       case EncryptionType.wpa:
         type = "Encryption type : WPA";
         break;
-      case EncryptionType.none:
+      default:
         type = "Encryption type : None";
         break;
     }
@@ -318,7 +318,8 @@ class ScanResultController extends GetxController {
     for (int i = 0; i < barcode.barcodes.length; i++) {
       content = content + currentContent(i);
     }
-    Share.share(content);
+    SharePlus.instance.share(ShareParams(text: content));
+
   }
 
   void copyGivenContent(BuildContext context, bool showSnackBar) async {

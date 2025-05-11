@@ -46,7 +46,6 @@ class HistoryController extends GetxController {
   }
 
   void searchProcedure(String textValue) {
-    print("-----$textValue");
     if (currentIndex == 0) {
       realmResultsCreatedQRCodeToShowShowInSearching = [];
       for (int i = 0; i < (realmResultsCreatedQRCodeToShow?.length ?? 0); i++) {
@@ -128,7 +127,7 @@ class HistoryController extends GetxController {
 
     File(path).writeAsBytesSync(memoryData);
 
-    await Share.shareXFiles([XFile(path)]);
+    SharePlus.instance.share(ShareParams(files: [XFile(path)]));
   }
 
   @override

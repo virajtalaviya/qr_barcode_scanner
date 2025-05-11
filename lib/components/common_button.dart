@@ -18,9 +18,9 @@ class CommonButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onTap,
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(ColorUtils.activeColor),
-        fixedSize: MaterialStateProperty.all(const Size(150, 40)),
-        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
+        backgroundColor: WidgetStateProperty.all(ColorUtils.activeColor),
+        fixedSize: WidgetStateProperty.all(const Size(150, 40)),
+        shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

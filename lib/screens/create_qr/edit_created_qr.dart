@@ -85,6 +85,7 @@ class EditCreatedQR extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Container(
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewPadding.bottom),
         decoration: const BoxDecoration(
           color: ColorUtils.tbBGColor,
           borderRadius: BorderRadius.only(

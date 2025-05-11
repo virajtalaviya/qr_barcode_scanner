@@ -64,9 +64,10 @@ class ScanBarcodeAndQR extends StatelessWidget {
                                         scanBarcodeQRController.getPermission();
                                       },
                                       style: ButtonStyle(
-                                        backgroundColor: MaterialStateProperty.all(ColorUtils.activeColor),
+                                        backgroundColor: WidgetStateProperty.all(ColorUtils.activeColor),
                                         // fixedSize: MaterialStateProperty.all(const Size(150, 40)),
-                                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
+                                        shape: WidgetStateProperty.all(
+                                            RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
                                       ),
                                       child: Text(
                                         "Retry",
@@ -85,9 +86,10 @@ class ScanBarcodeAndQR extends StatelessWidget {
                                         openAppSettings();
                                       },
                                       style: ButtonStyle(
-                                        backgroundColor: MaterialStateProperty.all(ColorUtils.activeColor),
+                                        backgroundColor: WidgetStateProperty.all(ColorUtils.activeColor),
                                         // fixedSize: MaterialStateProperty.all(const Size(150, 40)),
-                                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
+                                        shape: WidgetStateProperty.all(
+                                            RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
                                       ),
                                       child: Text(
                                         "Open settings",
@@ -100,7 +102,8 @@ class ScanBarcodeAndQR extends StatelessWidget {
                                     ),
                                   ),
                                 ],
-                              )
+                              ),
+                              SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
                             ],
                           ),
                         ),
@@ -124,12 +127,15 @@ class ScanBarcodeAndQR extends StatelessWidget {
                               scanBarcodeQRController.torchOnOff();
                             },
                             icon: Obx(() {
-                              return scanBarcodeQRController.isTorchOn.value ? const Icon(Icons.flash_on_sharp) : const Icon(Icons.flash_off_sharp);
+                              return scanBarcodeQRController.isTorchOn.value
+                                  ? const Icon(Icons.flash_on_sharp)
+                                  : const Icon(Icons.flash_off_sharp);
                             }),
                           ),
                         ],
                       ),
                       body: Container(
+                        margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewPadding.bottom),
                         decoration: const BoxDecoration(
                           color: Colors.red,
                           gradient: LinearGradient(
@@ -147,16 +153,13 @@ class ScanBarcodeAndQR extends StatelessWidget {
                           children: [
                             MobileScanner(
                               controller: scanBarcodeQRController.mobileScannerController,
-                              onScannerStarted: (arguments) {
-                                scanBarcodeQRController.hasError.value = false;
-                              },
                               onDetect: (barcodes) {
                                 if (scanBarcodeQRController.isTorchOn.value == true) {
                                   scanBarcodeQRController.mobileScannerController.toggleTorch();
                                 }
                                 Get.to(() => ScanResult(barcodes: barcodes));
                               },
-                              errorBuilder: (context, error, child) {
+                              errorBuilder: (context, error) {
                                 scanBarcodeQRController.hasError.value = true;
                                 if (error.errorCode == MobileScannerErrorCode.permissionDenied) {
                                   return const AlertDialog(
@@ -180,7 +183,15 @@ class ScanBarcodeAndQR extends StatelessWidget {
                                     ),
                                   );
                                 }
-                                return child ?? const SizedBox();
+                                return const AlertDialog(
+                                  content: Text(
+                                    "Some thing went wrong!",
+                                    style: TextStyle(
+                                      fontFamily: FontFamily.productSansRegular,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                );
                               },
                             ),
                             Align(
@@ -212,8 +223,9 @@ class ScanBarcodeAndQR extends StatelessWidget {
                                             children: [
                                               Container(
                                                 height: 5,
-                                                width:
-                                                    scanBarcodeQRController.containerWidth * scanBarcodeQRController.innerContainerWidth.value / 100,
+                                                width: scanBarcodeQRController.containerWidth *
+                                                    scanBarcodeQRController.innerContainerWidth.value /
+                                                    100,
                                                 decoration: BoxDecoration(
                                                   color: ColorUtils.activeColor,
                                                   borderRadius: BorderRadius.circular(10),

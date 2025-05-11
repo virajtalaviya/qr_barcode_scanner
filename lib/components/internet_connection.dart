@@ -6,7 +6,7 @@ import 'package:my_scanner/utils/constants.dart';
 
 class InternetConnection {
   static final Connectivity _connectivity = Connectivity();
-  static late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  static late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
 
   static final remoteConfig = FirebaseRemoteConfig.instance;
 
@@ -26,10 +26,15 @@ class InternetConnection {
     } catch (_) {}
   }
 
-  static bool gotConnection(ConnectivityResult result) {
-    if (result == ConnectivityResult.ethernet ||
-        result == ConnectivityResult.wifi ||
-        result == ConnectivityResult.mobile) {
+  static bool gotConnection(List<ConnectivityResult> result) {
+
+    if(result.contains(ConnectivityResult.ethernet)){
+      return true;
+    }
+    if(result.contains(ConnectivityResult.wifi)){
+      return true;
+    }
+    if(result.contains(ConnectivityResult.mobile)){
       return true;
     }
     return false;

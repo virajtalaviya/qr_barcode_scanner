@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -50,22 +48,15 @@ class CreateQRController extends GetxController {
   RxBool nativeAdLoaded = false.obs;
 
   void loadNativeAD() {
-    print("=====   LOAD NATIVE CALLED   ========================");
-    log("=====   LOAD NATIVE CALLED   ========================");
     nativeAd = NativeAd(
       adUnitId: "ca-app-pub-3940256099942544/2247696110",
       factoryId: 'listTile',
       listener: NativeAdListener(
         onAdImpression: (ad) {},
         onAdClicked: (ad) {},
-        onAdFailedToLoad: (ad, error) {
-          print("=====================   native ad failed to load===========================================");
-          log("=====================   native ad failed to load===========================================");
-        },
+        onAdFailedToLoad: (ad, error) {},
         onAdClosed: (ad) {},
         onAdLoaded: (ad) {
-          print("=====================  loaded  ===========================================");
-          log("=====================  loaded  ===========================================");
           nativeAdLoaded.value = true;
         },
         onAdOpened: (ad) {},

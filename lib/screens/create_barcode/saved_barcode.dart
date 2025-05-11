@@ -29,10 +29,10 @@ class SavedBarCode extends StatelessWidget {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
         Get.close(3);
-        return false;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -67,136 +67,139 @@ class SavedBarCode extends StatelessWidget {
             ),
           ],
         ),
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                child: Column(
-                  children: [
-                    Center(
-                      child: Container(
-                        height: height * 0.5,
+        body: Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewPadding.bottom),
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                  child: Column(
+                    children: [
+                      Center(
+                        child: Container(
+                          height: height * 0.5,
+                          width: width,
+                          padding: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            color: ColorUtils.splashLogoBG,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: ColorUtils.splashLogoBorder),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                codeType,
+                                style: const TextStyle(
+                                  fontFamily: FontFamily.productSansBold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                              Center(
+                                child: Container(
+                                  height: height * 0.35,
+                                  width: width * 0.75,
+                                  padding: const EdgeInsets.all(15),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    image: qrImage != null
+                                        ? DecorationImage(
+                                            image: MemoryImage(
+                                              qrImage ?? Uint8List(10),
+                                            ),
+                                          )
+                                        : null,
+                                    // border: Border.all(color: ColorUtils.splashLogoBorder),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        // height: height * 0.15,
                         width: width,
+                        margin: const EdgeInsets.only(top: 10, bottom: 10),
                         padding: const EdgeInsets.all(15),
                         decoration: BoxDecoration(
                           color: ColorUtils.splashLogoBG,
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(color: ColorUtils.splashLogoBorder),
                         ),
+                        constraints: BoxConstraints(
+                          minHeight: height * 0.15,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              codeType,
-                              style: const TextStyle(
-                                fontFamily: FontFamily.productSansBold,
+                            const Text(
+                              "Contents:",
+                              style: TextStyle(
                                 fontSize: 16,
+                                fontFamily: FontFamily.productSansBold,
                               ),
                             ),
-                            const SizedBox(height: 15),
-                            Center(
-                              child: Container(
-                                height: height * 0.35,
-                                width: width * 0.75,
-                                padding: const EdgeInsets.all(15),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                  image: qrImage != null
-                                      ? DecorationImage(
-                                          image: MemoryImage(
-                                            qrImage ?? Uint8List(10),
-                                          ),
-                                        )
-                                      : null,
-                                  // border: Border.all(color: ColorUtils.splashLogoBorder),
-                                ),
+                            const SizedBox(height: 5),
+                            Text(
+                              "${createdCode.content}",
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontFamily: FontFamily.productSansRegular,
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    Container(
-                      // height: height * 0.15,
-                      width: width,
-                      margin: const EdgeInsets.only(top: 10, bottom: 10),
-                      padding: const EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        color: ColorUtils.splashLogoBG,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: ColorUtils.splashLogoBorder),
-                      ),
-                      constraints: BoxConstraints(
-                        minHeight: height * 0.15,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
                         children: [
-                          const Text(
-                            "Contents:",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontFamily: FontFamily.productSansBold,
+                          Expanded(
+                            child: CommonButton(
+                              title: "Share",
+                              imagePath: ImagePaths.elevatedButtonShare,
+                              onTap: () async {
+                                if (qrImage != null) {
+                                  /// Type of qrImage is Uint8List
+                                  final Directory temporaryDirectory = await getTemporaryDirectory();
+                                  final String path = "${temporaryDirectory.path}/image.jpg";
+                                  File(path).writeAsBytesSync(qrImage!);
+                                  SharePlus.instance.share(ShareParams(files: [XFile(path)]));
+                                } else {
+                                  showSnackBar(context, "This barcode can't be shared");
+                                }
+                              },
                             ),
                           ),
-                          const SizedBox(height: 5),
-                          Text(
-                            "${createdCode.content}",
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontFamily: FontFamily.productSansRegular,
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: CommonButton(
+                              title: "Delete",
+                              imagePath: ImagePaths.elevatedButtonDelete,
+                              onTap: () {
+                                DataBaseHelper.realm.write(() {
+                                  DataBaseHelper.realm
+                                      .delete<CreatedCode>(DataBaseHelper.realm.all<CreatedCode>().last);
+                                });
+                                Get.close(3);
+                                showSnackBar(context, "Barcode deleted");
+                              },
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: CommonButton(
-                            title: "Share",
-                            imagePath: ImagePaths.elevatedButtonShare,
-                            onTap: () async {
-                              if (qrImage != null) {
-                                /// Type of qrImage is Uint8List
-                                final Directory temporaryDirectory = await getTemporaryDirectory();
-                                final String path = "${temporaryDirectory.path}/image.jpg";
-                                File(path).writeAsBytesSync(qrImage!);
-                                await Share.shareXFiles([XFile(path)]);
-                              } else {
-                                showSnackBar(context, "This barcode can't be shared");
-                              }
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: CommonButton(
-                            title: "Delete",
-                            imagePath: ImagePaths.elevatedButtonDelete,
-                            onTap: () {
-                              DataBaseHelper.realm.write(() {
-                                DataBaseHelper.realm
-                                    .delete<CreatedCode>(DataBaseHelper.realm.all<CreatedCode>().last);
-                              });
-                              Get.close(3);
-                              showSnackBar(context, "Barcode deleted");
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const Align(
-              alignment: Alignment.bottomCenter,
-              child: BannerComponent(),
-            ),
-          ],
+              const Align(
+                alignment: Alignment.bottomCenter,
+                child: BannerComponent(),
+              ),
+            ],
+          ),
         ),
       ),
     );

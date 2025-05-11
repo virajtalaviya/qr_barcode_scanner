@@ -14,7 +14,12 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     SettingsController settingsController = Get.put(SettingsController());
     return Padding(
-      padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+      padding: EdgeInsets.only(
+        top: 20,
+        left: 20,
+        right: 20,
+        bottom: MediaQuery.of(context).viewPadding.bottom,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -35,7 +40,7 @@ class Settings extends StatelessWidget {
                     settingsController.autoCopyToClipBoard.value = !settingsController.autoCopyToClipBoard.value;
                     PreferenceUtils.setAutoCopyToClipBoardValue(settingsController.autoCopyToClipBoard.value);
                   },
-                  activeColor: ColorUtils.activeColor,
+                  activeTrackColor: ColorUtils.activeColor,
                 );
               }),
             ],
@@ -78,7 +83,7 @@ class Settings extends StatelessWidget {
                   onChanged: (value) {
                     settingsController.scanControl.value = "vibrate";
                     PreferenceUtils.setScanControl("vibrate");
-                    showSnackBar(context, "Make sure 'Vibrate on touch' is on in settings in your phone",5);
+                    showSnackBar(context, "Make sure 'Vibrate on touch' is on in settings in your phone", 5);
                   },
                   activeColor: ColorUtils.activeColor,
                 ),
@@ -87,7 +92,6 @@ class Settings extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontFamily: FontFamily.productSansRegular,
-            
                   ),
                 ),
               ],
@@ -115,7 +119,7 @@ class Settings extends StatelessWidget {
                     settingsController.addScanHistory.value = !settingsController.addScanHistory.value;
                     PreferenceUtils.setAddScanHistoryValue(settingsController.addScanHistory.value);
                   },
-                  activeColor: ColorUtils.activeColor,
+                  activeTrackColor: ColorUtils.activeColor,
                 );
               }),
             ],

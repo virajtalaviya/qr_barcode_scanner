@@ -28,10 +28,10 @@ class SavedQRCode extends StatelessWidget {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
         Get.close(3);
-        return false;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -70,7 +70,12 @@ class SavedQRCode extends StatelessWidget {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+            padding: EdgeInsets.only(
+              left: 15,
+              right: 15,
+              top: 15,
+              bottom: MediaQuery.of(context).viewPadding.bottom,
+            ),
             child: Column(
               children: [
                 Center(
@@ -156,7 +161,8 @@ class SavedQRCode extends StatelessWidget {
                             final Directory temporaryDirectory = await getTemporaryDirectory();
                             final String path = "${temporaryDirectory.path}/image.jpg";
                             File(path).writeAsBytesSync(qrImage!);
-                            await Share.shareXFiles([XFile(path)]);
+
+                            SharePlus.instance.share(ShareParams(files: [XFile(path)]));
                           } else {
                             showSnackBar(context, "This QR can't be shared");
                           }

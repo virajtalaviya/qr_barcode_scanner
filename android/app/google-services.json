@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "966973866897",
     "project_id": "qr-barcode-scanner-728e2",
-    "storage_bucket": "qr-barcode-scanner-728e2.appspot.com"
+    "storage_bucket": "qr-barcode-scanner-728e2.firebasestorage.app"
   },
   "client": [
     {
@@ -12,12 +12,7 @@
           "package_name": "com.app.qrbarscanner"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "966973866897-f3esvdek5m5e1fdnr4i3tnegdpbhqfhk.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyDwidKFmBV2xkvlteZvHZE2PPMpNpAUAvA"
@@ -25,12 +20,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "966973866897-f3esvdek5m5e1fdnr4i3tnegdpbhqfhk.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

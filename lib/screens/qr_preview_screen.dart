@@ -25,7 +25,7 @@ class QrPreviewScreenForCreated extends StatelessWidget {
     final Directory temporaryDirectory = await getTemporaryDirectory();
     final String path = "${temporaryDirectory.path}/image.jpg";
     File(path).writeAsBytesSync(qrImage);
-    await Share.shareXFiles([XFile(path)]);
+    SharePlus.instance.share(ShareParams(files: [XFile(path)]));
   }
 
   @override
@@ -48,7 +48,12 @@ class QrPreviewScreenForCreated extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+          padding: EdgeInsets.only(
+            left: 15,
+            right: 15,
+            top: 15,
+            bottom: MediaQuery.of(context).viewPadding.bottom,
+          ),
           child: Column(
             children: [
               Center(

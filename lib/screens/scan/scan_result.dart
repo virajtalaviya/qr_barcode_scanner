@@ -48,7 +48,12 @@ class ScanResult extends StatelessWidget {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+        padding: EdgeInsets.only(
+          left: 15,
+          right: 15,
+          top: 15,
+          bottom: MediaQuery.of(context).viewPadding.bottom,
+        ),
         child: Column(
           children: [
             Container(

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -164,15 +162,15 @@ class CreateQRScreen extends StatelessWidget {
                 ),
               ),
               Obx(() {
-                print("[][][][][][][]${createQRController.nativeAdLoaded.value}");
                 return SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  height: 270,//MediaQuery.of(context).size.height * 0.25,
+                  height: 270, //MediaQuery.of(context).size.height * 0.25,
                   child: createQRController.nativeAdLoaded.value
                       ? AdWidget(ad: createQRController.nativeAd)
                       : const SizedBox(),
                 );
               }),
+              SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
             ],
           ),
         ),

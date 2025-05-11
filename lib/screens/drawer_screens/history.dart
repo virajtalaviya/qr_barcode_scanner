@@ -93,6 +93,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
               ],
             ),
           ),
+          SizedBox(height: MediaQuery.of(context).viewPadding.bottom)
         ],
       ),
     );
@@ -501,11 +502,12 @@ class HistoryPageScanned extends StatelessWidget {
                                         return [
                                           PopupMenuItem(
                                             onTap: () {
-                                              Share.share((historyController
+                                              String des = (historyController
                                                           .realmResultsQRDatabaseToShowInSearching?[index]
                                                           .description ??
                                                       "")
-                                                  .trim());
+                                                  .trim();
+                                              SharePlus.instance.share(ShareParams(text: des));
                                             },
                                             padding: const EdgeInsets.only(left: 10, right: 15),
                                             child: Row(
@@ -658,9 +660,11 @@ class HistoryPageScanned extends StatelessWidget {
                                   return [
                                     PopupMenuItem(
                                       onTap: () {
-                                        Share.share(
+                                        String des =
                                             (historyController.realmResultsQRDatabaseToShow?[index].description ?? "")
-                                                .trim());
+                                                .trim();
+
+                                        SharePlus.instance.share(ShareParams(text: des));
                                       },
                                       padding: const EdgeInsets.only(left: 10, right: 15),
                                       child: Row(

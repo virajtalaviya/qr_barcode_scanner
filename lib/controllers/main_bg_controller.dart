@@ -12,16 +12,14 @@ import 'package:my_scanner/utils/color_utils.dart';
 import 'package:my_scanner/utils/constants.dart';
 import 'package:my_scanner/utils/font_family.dart';
 import 'package:my_scanner/utils/image_paths.dart';
-import 'package:my_scanner/widgets/custom_app_bars/history_app_bar.dart';
-import 'package:my_scanner/widgets/custom_app_bars/home_app_bar.dart';
-import 'package:my_scanner/widgets/custom_app_bars/settings_app_bar.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class MainBGController extends GetxController {
   late BuildContext context;
   Widget? currentWidget;
-  PreferredSizeWidget? currentAppBar;
+  // PreferredSizeWidget? currentAppBar;
+  RxString currentBar = "home".obs;
   HistoryController historyController = Get.put(HistoryController());
   int currentIndex = 0;
   late GlobalKey<ScaffoldState> scaffoldKey;
@@ -103,40 +101,46 @@ class MainBGController extends GetxController {
     switch (currentIndex) {
       case 0:
         currentWidget = const HomeScreen();
-        currentAppBar = HomeAppBar(scaffoldKey: scaffoldKey);
+        // currentAppBar = HomeAppBar(scaffoldKey: scaffoldKey);
+        currentBar.value = "home";
         update();
         break;
       case 1:
         historyController.getScannedQR();
         historyController.getCreatedQRCode();
         currentWidget = History(historyController: historyController);
-        currentAppBar = HistoryAppBar(scaffoldKey: scaffoldKey, historyController: historyController);
+        // currentAppBar = HistoryAppBar(scaffoldKey: scaffoldKey, historyController: historyController);
+        currentBar.value = "history";
         update();
         break;
       case 2:
         if (Constants.appPlayStoreURL == "") {
-          showSnackBar(context, "Can not open play store to give feedback, make sure you are connected to internet and retry after some time");
+          showSnackBar(context,
+              "Can not open play store to give feedback, make sure you are connected to internet and retry after some time");
         } else {
           launchUrlString(Constants.appPlayStoreURL, mode: LaunchMode.externalApplication);
         }
         break;
       case 3:
         if (Constants.appPlayStoreURL == "") {
-          showSnackBar(context, "Can not share this app, make sure you are connected to internet and retry after some time");
+          showSnackBar(
+              context, "Can not share this app, make sure you are connected to internet and retry after some time");
         } else {
-          Share.share(Constants.appPlayStoreURL);
+          SharePlus.instance.share(ShareParams(text: Constants.appPlayStoreURL));
         }
         break;
       case 4:
         if (Constants.appPlayStoreURL == "") {
-          showSnackBar(context, "Can not open play store to give rate, make sure you are connected to internet and retry after some time");
+          showSnackBar(context,
+              "Can not open play store to give rate, make sure you are connected to internet and retry after some time");
         } else {
           launchUrlString(Constants.appPlayStoreURL, mode: LaunchMode.externalApplication);
         }
         break;
       case 5:
         currentWidget = const Settings();
-        currentAppBar = SettingsAppBar(scaffoldKey: scaffoldKey);
+        // currentAppBar = SettingsAppBar(scaffoldKey: scaffoldKey);
+        currentBar.value = "settings";
         update();
         break;
     }
