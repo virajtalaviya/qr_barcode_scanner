@@ -29,7 +29,10 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(FocusNode());
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+          currentFocus.unfocus();
+        }
       },
       child: Column(
         children: [

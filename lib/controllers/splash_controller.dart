@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:firebase_remote_config/firebase_remote_config.dart';
+// import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:my_scanner/components/audio_player_helper.dart';
@@ -10,7 +10,7 @@ import 'package:my_scanner/utils/database_helper.dart';
 import 'package:my_scanner/utils/preference_utils.dart';
 
 class SplashController extends GetxController {
-  final remoteConfig = FirebaseRemoteConfig.instance;
+  // final remoteConfig = FirebaseRemoteConfig.instance;
 
   late AppLifecycleReactor _appLifecycleReactor;
 

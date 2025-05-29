@@ -99,6 +99,7 @@ class ScanResult extends StatelessWidget {
                   ],
                 )),
             Container(
+              padding: EdgeInsets.all(10.0),
               height: height * 0.3,
               decoration: BoxDecoration(
                 color: ColorUtils.tbBGColor,
@@ -110,23 +111,20 @@ class ScanResult extends StatelessWidget {
                   bottomRight: Radius.circular(10),
                 ),
               ),
-              alignment: Alignment.center,
-              child: Center(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: List.generate(
-                      barcodes.barcodes.length,
-                      (index) {
-                        return Text(
-                          scanResultController.currentContent(index),
-                          style: const TextStyle(
-                            fontFamily: FontFamily.productSansRegular,
-                            fontSize: 16,
-                          ),
-                        );
-                      },
-                    ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(
+                    barcodes.barcodes.length,
+                    (index) {
+                      return SelectableText(
+                        scanResultController.currentContent(index),
+                        style: const TextStyle(
+                          fontFamily: FontFamily.productSansRegular,
+                          fontSize: 16,
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
