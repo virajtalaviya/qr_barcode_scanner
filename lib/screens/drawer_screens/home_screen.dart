@@ -33,7 +33,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             Row(
-              
               children: [
                 CommonBox(
                   path: ImagePaths.createQR,

@@ -8,10 +8,12 @@ class CommonButton extends StatelessWidget {
     required this.title,
     required this.imagePath,
     required this.onTap,
+    this.width,
   }) : super(key: key);
   final String imagePath;
   final String title;
   final VoidCallback onTap;
+  final double? width;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class CommonButton extends StatelessWidget {
       onPressed: onTap,
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.all(ColorUtils.activeColor),
-        fixedSize: WidgetStateProperty.all(const Size(150, 40)),
+        fixedSize: WidgetStateProperty.all(Size(width ?? 150, 40)),
         shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
       ),
       child: Row(

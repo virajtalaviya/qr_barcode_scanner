@@ -107,7 +107,7 @@ class CreateQRScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                height: height * 0.3,
+                height: height * 0.2,
                 margin: const EdgeInsets.only(top: 10),
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
@@ -150,7 +150,7 @@ class CreateQRScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 10),
               SizedBox(
                 height: 40,
                 child: CommonButton(
@@ -161,15 +161,22 @@ class CreateQRScreen extends StatelessWidget {
                   },
                 ),
               ),
-              Obx(() {
-                return SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 270, //MediaQuery.of(context).size.height * 0.25,
-                  child: createQRController.nativeAdLoaded.value
-                      ? AdWidget(ad: createQRController.nativeAd)
-                      : const SizedBox(),
-                );
-              }),
+              const SizedBox(height: 10),
+              Center(
+                child: Obx(() {
+                  return createQRController.isNativeAdLoaded.value && createQRController.nativeAd != null
+                      ? ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minWidth: 320, // Minimum width
+                      minHeight: 250, // Minimum height based on your native ad layout
+                      maxWidth: 400,
+                      maxHeight: 350, // Maximum height
+                    ),
+                    child: AdWidget(ad: createQRController.nativeAd!),
+                  )
+                      : const SizedBox.shrink();
+                }),
+              ),
               SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
             ],
           ),

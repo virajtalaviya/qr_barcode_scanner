@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:my_scanner/components/common_button.dart';
 import 'package:my_scanner/controllers/create_barcode/create_barcode_controller.dart';
 import 'package:my_scanner/utils/color_utils.dart';
@@ -82,7 +83,7 @@ class CreateBarcodeScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                height: height * 0.3,
+                height: height * 0.25,
                 margin: const EdgeInsets.only(top: 10),
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
@@ -125,18 +126,32 @@ class CreateBarcodeScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 25),
-              SizedBox(
-                height: 40,
-                child: CommonButton(
-                  title: "Create",
-                  imagePath: ImagePaths.elevatedButtonCheck,
-                  onTap: () {
-                    createBarcodeController.tapEventOfCreateButton(context);
-                  },
-                ),
+              const SizedBox(height: 10),
+              CommonButton(
+                title: "Create",
+                imagePath: ImagePaths.elevatedButtonCheck,
+                onTap: () {
+                  createBarcodeController.tapEventOfCreateButton(context);
+                },
               ),
-              SizedBox(height: MediaQuery.of(context).viewPadding.bottom)
+              const SizedBox(height: 10),
+              Center(
+                child: Obx(() {
+                  return createBarcodeController.isNativeAdLoaded.value && createBarcodeController.nativeAd != null
+                      ? ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minWidth: 320, // Minimum width
+                      minHeight: 250, // Minimum height based on your native ad layout
+                      maxWidth: 400,
+                      maxHeight: 350, // Maximum height
+                    ),
+                    child: AdWidget(ad: createBarcodeController.nativeAd!),
+                  )
+                      : const SizedBox.shrink();
+                }),
+              ),
+              SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
+
             ],
           ),
         ),

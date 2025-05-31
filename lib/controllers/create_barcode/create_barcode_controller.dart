@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:my_scanner/components/barcode_validator.dart';
 import 'package:my_scanner/components/common_snackbar.dart';
 import 'package:my_scanner/screens/create_barcode/edit_created_barcode.dart';
 import 'package:my_scanner/utils/image_paths.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
+
+import '../../utils/constants.dart';
 
 class CreateBarcodeController extends GetxController {
   RxString currentValue = "Codabar".obs;
@@ -74,7 +77,7 @@ class CreateBarcodeController extends GetxController {
     if (textEditingController.text.trim().isEmpty) {
       showSnackBar(context, "Please enter some text");
     } else if (snackBarContent.isNotEmpty) {
-      showSnackBar(context, snackBarContent,4);
+      showSnackBar(context, snackBarContent, 4);
     } else {
       Get.to(
         () => EditCreatedBarcode(
@@ -84,6 +87,40 @@ class CreateBarcodeController extends GetxController {
         ),
       );
     }
+  }
+
+  NativeAd? nativeAd;
+  RxBool isNativeAdLoaded = false.obs;
+
+  void loadNativeAD() {
+    nativeAd = NativeAd(
+      adUnitId: Constants.nativeAD,
+      factoryId: "myNativeAdFactoryId",
+      listener: NativeAdListener(
+        onAdImpression: (ad) {},
+        onAdClicked: (ad) {},
+        onAdFailedToLoad: (ad, error) {},
+        onAdClosed: (ad) {},
+        onAdLoaded: (ad) {
+          isNativeAdLoaded.value = true;
+        },
+        onAdOpened: (ad) {},
+        onAdWillDismissScreen: (ad) {},
+        onPaidEvent: (ad, valueMicros, precision, currencyCode) {},
+      ),
+      request: const AdRequest(),
+      nativeTemplateStyle: NativeTemplateStyle(
+        templateType: TemplateType.medium,
+      ),
+    );
+    nativeAd?.load();
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    loadNativeAD();
   }
 }
 

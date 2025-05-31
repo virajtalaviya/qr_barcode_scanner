@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:my_scanner/components/audio_player_helper.dart';
+import 'package:my_scanner/utils/constants.dart';
 import 'package:my_scanner/utils/database_helper.dart';
 import 'package:my_scanner/utils/preference_utils.dart';
 import 'package:share_plus/share_plus.dart';
@@ -34,16 +35,20 @@ class ScanResultController extends GetxController {
   }
 
   NativeAd? nativeAd;
+  RxBool isNativeAdLoaded = false.obs;
 
   void loadNativeAD() {
     nativeAd = NativeAd(
-      adUnitId: "ca-app-pub-3940256099942544/2247696110",
+      adUnitId: Constants.nativeAD,
+      factoryId: "myNativeAdFactoryId",
       listener: NativeAdListener(
         onAdImpression: (ad) {},
         onAdClicked: (ad) {},
         onAdFailedToLoad: (ad, error) {},
         onAdClosed: (ad) {},
-        onAdLoaded: (ad) {},
+        onAdLoaded: (ad) {
+          isNativeAdLoaded.value = true;
+        },
         onAdOpened: (ad) {},
         onAdWillDismissScreen: (ad) {},
         onPaidEvent: (ad, valueMicros, precision, currencyCode) {},

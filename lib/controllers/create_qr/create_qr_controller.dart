@@ -5,6 +5,8 @@ import 'package:my_scanner/components/common_snackbar.dart';
 import 'package:my_scanner/screens/create_qr/edit_created_qr.dart';
 import 'package:my_scanner/utils/image_paths.dart';
 
+import '../../utils/constants.dart';
+
 class CreateQRController extends GetxController {
   RxString currentValue = "Text".obs;
   TextEditingController textEditingController = TextEditingController();
@@ -44,28 +46,31 @@ class CreateQRController extends GetxController {
     }
   }
 
-  late NativeAd nativeAd;
-  RxBool nativeAdLoaded = false.obs;
+  NativeAd? nativeAd;
+  RxBool isNativeAdLoaded = false.obs;
 
   void loadNativeAD() {
     nativeAd = NativeAd(
-      adUnitId: "ca-app-pub-3940256099942544/2247696110",
-      factoryId: 'listTile',
+      adUnitId: Constants.nativeAD,
+      factoryId: "myNativeAdFactoryId",
       listener: NativeAdListener(
         onAdImpression: (ad) {},
         onAdClicked: (ad) {},
         onAdFailedToLoad: (ad, error) {},
         onAdClosed: (ad) {},
         onAdLoaded: (ad) {
-          nativeAdLoaded.value = true;
+          isNativeAdLoaded.value = true;
         },
         onAdOpened: (ad) {},
         onAdWillDismissScreen: (ad) {},
         onPaidEvent: (ad, valueMicros, precision, currencyCode) {},
       ),
       request: const AdRequest(),
+      nativeTemplateStyle: NativeTemplateStyle(
+        templateType: TemplateType.medium,
+      ),
     );
-    nativeAd.load();
+    nativeAd?.load();
   }
 
   @override

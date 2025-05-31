@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:my_scanner/components/common_button.dart';
 import 'package:my_scanner/controllers/scan_result_controller.dart';
@@ -99,8 +100,8 @@ class ScanResult extends StatelessWidget {
                   ],
                 )),
             Container(
-              padding: EdgeInsets.all(10.0),
-              height: height * 0.3,
+              padding: const EdgeInsets.all(10.0),
+              height: height * 0.2,
               decoration: BoxDecoration(
                 color: ColorUtils.tbBGColor,
                 border: Border.all(
@@ -129,7 +130,7 @@ class ScanResult extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 25),
+            const SizedBox(height: 10),
             Row(
               children: [
                 Expanded(
@@ -152,7 +153,23 @@ class ScanResult extends StatelessWidget {
                   ),
                 ),
               ],
-            )
+            ),
+            const SizedBox(height: 10),
+            Center(
+              child: Obx(() {
+                return scanResultController.isNativeAdLoaded.value && scanResultController.nativeAd != null
+                    ? ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minWidth: 320, // Minimum width
+                          minHeight: 250, // Minimum height based on your native ad layout
+                          maxWidth: 400,
+                          maxHeight: 350, // Maximum height
+                        ),
+                        child: AdWidget(ad: scanResultController.nativeAd!),
+                      )
+                    : const SizedBox.shrink();
+              }),
+            ),
           ],
         ),
       ),

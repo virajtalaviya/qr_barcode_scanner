@@ -27,78 +27,70 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-          currentFocus.unfocus();
-        }
-      },
-      child: Column(
-        children: [
-          const SizedBox(height: 15),
-          Container(
-            width: 250,
-            height: 50,
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 4),
-            decoration: BoxDecoration(
-              color: ColorUtils.tbBGColor,
-              border: Border.all(color: ColorUtils.tbBGBorderColor),
+    return Column(
+      children: [
+        const SizedBox(height: 15),
+        Container(
+          width: 250,
+          height: 50,
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 4),
+          decoration: BoxDecoration(
+            color: ColorUtils.tbBGColor,
+            border: Border.all(color: ColorUtils.tbBGBorderColor),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: TabBar(
+            onTap: (value) {
+              widget.historyController.currentIndex = value;
+            },
+            controller: tabController,
+            automaticIndicatorColorAdjustment: false,
+            enableFeedback: true,
+            labelColor: Colors.white,
+            tabs: const [
+              Tab(
+                child: Text(
+                  "Created",
+                  style: TextStyle(
+                    fontFamily: FontFamily.productSansBold,
+                  ),
+                ),
+              ),
+              Tab(
+                child: Text(
+                  "Scanned",
+                  style: TextStyle(
+                    fontFamily: FontFamily.productSansBold,
+                  ),
+                ),
+              ),
+            ],
+            unselectedLabelColor: Colors.black,
+            unselectedLabelStyle: const TextStyle(
+              fontFamily: FontFamily.productSansBold,
+            ),
+            indicatorSize: TabBarIndicatorSize.tab,
+            indicator: BoxDecoration(
               borderRadius: BorderRadius.circular(6),
-            ),
-            child: TabBar(
-              onTap: (value) {
-                widget.historyController.currentIndex = value;
-              },
-              controller: tabController,
-              automaticIndicatorColorAdjustment: false,
-              enableFeedback: true,
-              labelColor: Colors.white,
-              tabs: const [
-                Tab(
-                  child: Text(
-                    "Created",
-                    style: TextStyle(
-                      fontFamily: FontFamily.productSansBold,
-                    ),
-                  ),
-                ),
-                Tab(
-                  child: Text(
-                    "Scanned",
-                    style: TextStyle(
-                      fontFamily: FontFamily.productSansBold,
-                    ),
-                  ),
-                ),
-              ],
-              unselectedLabelColor: Colors.black,
-              unselectedLabelStyle: const TextStyle(
-                fontFamily: FontFamily.productSansBold,
-              ),
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                color: ColorUtils.activeColor,
-              ),
+              color: ColorUtils.activeColor,
             ),
           ),
-          Expanded(
-            child: TabBarView(
-              controller: tabController,
-              children: [
-                HistoryPageCreated(
-                  historyController: widget.historyController,
-                ),
-                HistoryPageScanned(
-                  historyController: widget.historyController,
-                ),
-              ],
-            ),
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: tabController,
+            children: [
+              HistoryPageCreated(
+                historyController: widget.historyController,
+              ),
+              HistoryPageScanned(
+                historyController: widget.historyController,
+              ),
+            ],
           ),
-          SizedBox(height: MediaQuery.of(context).viewPadding.bottom)
-        ],
-      ),
+        ),
+        SizedBox(height: MediaQuery.of(context).viewPadding.bottom)
+      ],
     );
   }
 }
