@@ -6,7 +6,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:my_scanner/components/common_loader.dart';
 import 'package:my_scanner/screens/create_qr/saved_qr.dart';
 import 'package:my_scanner/utils/constants.dart';
 import 'package:my_scanner/utils/database_helper.dart';
@@ -107,7 +106,7 @@ class EditCreatedQRController extends GetxController {
   }
 
   void saveQRCode() async {
-    showLoader(context);
+    // showLoader(context);
 
     Uint8List? qrImage = await _capturePng();
     String intListString = qrImage?.join(',') ?? "";
@@ -122,9 +121,9 @@ class EditCreatedQRController extends GetxController {
         ),
       );
     });
-    if (context.mounted) {
-      Navigator.pop(context);
-    }
+    // if (context.mounted) {
+    //   Navigator.pop(context);
+    // }
     Get.to(
       () => SavedQRCode(
         qrImage: qrImage,

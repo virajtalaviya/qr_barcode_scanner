@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:my_scanner/components/banner_ad_component.dart';
 import 'package:my_scanner/components/common_button.dart';
 import 'package:my_scanner/components/common_snackbar.dart';
+import 'package:my_scanner/screens/main_bg.dart';
 import 'package:my_scanner/utils/color_utils.dart';
 import 'package:my_scanner/utils/database_helper.dart';
 import 'package:my_scanner/utils/font_family.dart';
@@ -31,7 +32,7 @@ class SavedQRCode extends StatelessWidget {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
-        Get.close(3);
+        Get.offAll(() => const MainBG());
       },
       child: Scaffold(
         appBar: AppBar(
@@ -58,7 +59,7 @@ class SavedQRCode extends StatelessWidget {
           actions: [
             IconButton(
               onPressed: () {
-                Get.close(3);
+                Get.offAll(() => const MainBG());
               },
               icon: Image.asset(
                 ImagePaths.homeIcon,
@@ -189,7 +190,12 @@ class SavedQRCode extends StatelessWidget {
             ),
           ),
         ),
-        bottomNavigationBar: const BannerComponent(),
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewPadding.bottom,
+          ),
+          child: const BannerComponent(),
+        ),
       ),
     );
   }
